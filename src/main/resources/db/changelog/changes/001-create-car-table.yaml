@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001
+      author: your_name
+      changes:
+        - createTable:
+            tableName: car
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: model
+                  type: VARCHAR(255)
+              - column:
+                  name: brand
+                  type: VARCHAR(255)
+              - column:
+                  name: type
+                  type: VARCHAR(20)
+              - column:
+                  name: inventory
+                  type: INT
+              - column:
+                  name: daily_fee
+                  type: DECIMAL(10, 2)
