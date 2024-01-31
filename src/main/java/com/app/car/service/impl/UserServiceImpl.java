@@ -8,6 +8,10 @@ import com.app.car.model.User;
 import com.app.car.repository.UserRepository;
 import com.app.car.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) throws RegistrationException {
@@ -25,8 +30,21 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setEmail(requestDto.getEmail());
-        user.setPassword(requestDto.getPassword());
+
+        user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         User savedUser = userRepository.save(user);
         return userMapper.toUserResponse(savedUser);
+    }
+
+    @Override
+    public UserDetails loadUserByEmailAndPassword(String email, String password) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new BadCredentialsException("Invalid password");
+        }
+
+        return userMapper.toUserDetails(user);
     }
 }
