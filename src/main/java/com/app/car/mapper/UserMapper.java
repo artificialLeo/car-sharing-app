@@ -23,7 +23,11 @@ public interface UserMapper {
     @Mapping(target = "authorities", expression = "java(mapAuthorities(user))")
     UserDetails toUserDetails(User user);
 
+
     default Collection<? extends GrantedAuthority> mapAuthorities(User user) {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return user.getAuthorities()
+                .stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
+                .toList();
     }
 }

@@ -7,7 +7,9 @@ import com.app.car.mapper.UserMapper;
 import com.app.car.model.User;
 import com.app.car.repository.UserRepository;
 import com.app.car.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +20,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private UserMapper userMapper;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) throws RegistrationException {
