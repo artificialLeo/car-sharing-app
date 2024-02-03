@@ -3,7 +3,7 @@ package com.app.car.controller;
 import com.app.car.dto.user.UserLoginRequestDto;
 import com.app.car.dto.user.UserLoginResponseDto;
 import com.app.car.dto.user.UserRegistrationRequestDto;
-import com.app.car.dto.user.UserResponseDto;
+import com.app.car.dto.user.UserRegistrationResponseDto;
 import com.app.car.exception.RegistrationException;
 import com.app.car.security.AuthenticationService;
 import com.app.car.service.UserService;
@@ -22,7 +22,7 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/registration")
-    public UserResponseDto registration(@RequestBody UserRegistrationRequestDto requestDto) throws RegistrationException {
+    public UserRegistrationResponseDto registration(@RequestBody UserRegistrationRequestDto requestDto) throws RegistrationException {
         return userService.register(requestDto);
     }
 

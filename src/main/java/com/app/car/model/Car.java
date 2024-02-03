@@ -1,17 +1,18 @@
 package com.app.car.model;
 
 import com.app.car.model.enums.CarType;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import java.math.BigDecimal;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "cars")
 public class Car {
 
     @Id
@@ -22,11 +23,10 @@ public class Car {
 
     private String brand;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private CarType type;
 
     private int inventory;
 
     private BigDecimal dailyFee;
 }
-

@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+@EnableMethodSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
