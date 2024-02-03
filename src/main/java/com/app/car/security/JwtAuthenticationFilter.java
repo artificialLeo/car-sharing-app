@@ -29,6 +29,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+        String requestPath = request.getServletPath();
+
+        if (isPermittedEndpoint(requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = getToken(request);
 
         if (token != null && jwtUtil.isValidToken(token)) {
@@ -49,6 +56,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
 
-        return null;
+        return "";
+    }
+
+    private boolean isPermittedEndpoint(String requestPath) {
+        return requestPath.startsWith("/auth/registration") || requestPath.startsWith("/auth/login");
     }
 }

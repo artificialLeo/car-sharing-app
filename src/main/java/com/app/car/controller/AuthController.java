@@ -21,9 +21,8 @@ public class AuthController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-
     @PostMapping("/registration")
-    public UserResponseDto registerUser(@RequestBody UserRegistrationRequestDto requestDto) throws RegistrationException {
+    public UserResponseDto registration(@RequestBody UserRegistrationRequestDto requestDto) throws RegistrationException {
         return userService.register(requestDto);
     }
 
