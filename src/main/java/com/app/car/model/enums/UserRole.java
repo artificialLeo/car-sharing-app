@@ -1,6 +1,6 @@
 package com.app.car.model.enums;
 
 public enum UserRole {
-    MANAGER,
-    CUSTOMER
+    ROLE_MANAGER,
+    ROLE_CUSTOMER
 }

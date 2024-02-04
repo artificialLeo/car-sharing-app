@@ -4,7 +4,7 @@ databaseChangeLog:
       author: your_name
       changes:
         - createTable:
-            tableName: car
+            tableName: cars
             columns:
               - column:
                   name: id
