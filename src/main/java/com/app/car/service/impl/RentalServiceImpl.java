@@ -1,8 +1,8 @@
 package com.app.car.service.impl;
 
+import com.app.car.dto.rental.CompletedRentalDto;
 import com.app.car.dto.rental.RentalDto;
-import com.app.car.exception.InsufficientInventoryException;
-import com.app.car.exception.RentalNotFoundException;
+import com.app.car.exception.*;
 import com.app.car.mapper.RentalMapper;
 import com.app.car.model.Car;
 import com.app.car.model.Rental;
@@ -26,37 +26,53 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public RentalDto addRental(RentalDto rentalDto) {
         Car car = carService.getCarById(rentalDto.getCarId());
+
+        List<Rental> activeRentalsForCar = rentalRepository.findByCar_IdAndActualReturnDateIsNull(car.getId());
+        if (!activeRentalsForCar.isEmpty()) {
+            throw new CarAlreadyRentedException("Car with ID " + car.getId() + " is already rented and not returned yet.");
+        }
+
         if (car.getInventory() > 0) {
             car.setInventory(car.getInventory() - 1);
             carService.updateCar(car.getId(), car);
-            Rental addedRental = rentalRepository
-                    .save(rentalMapper.toEntity(rentalDto));
+            Rental addedRental = rentalRepository.save(rentalMapper.toEntity(rentalDto));
             return rentalMapper.toDto(addedRental);
         } else {
-            throw new InsufficientInventoryException("Car inventory is insufficient with id : "
-                    + car.getId());
+            throw new InsufficientInventoryException("Car inventory is insufficient with ID: " + car.getId());
         }
     }
 
+
     @Override
-    public List<RentalDto> getRentalsByUserAndStatus(Long userId, boolean isActive) {
-        List<Rental> rentals = rentalRepository.findByUser_IdAndReturnDateIsNull(userId);
+    public List<RentalDto> getRentalsByUserAndStatus(Long userId, boolean carReturned) {
+        List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(userId, carReturned);
+
+        if (rentals.isEmpty()) {
+            throw new NoRentalsFoundException("No rentals found for user with ID: "
+                    + userId + " and carReturned: " + carReturned);
+        }
+
         return rentalMapper.toDtoList(rentals);
     }
 
     @Override
     public RentalDto getRentalById(Long id) {
-        Rental rental = rentalRepository.findById(id).orElse(null);
+        Rental rental = rentalRepository.findById(id)
+                .orElseThrow(() -> new RentalNotFoundException("Rental not found with id: " + id));
+
         return rentalMapper.toDto(rental);
     }
 
     @Override
-    public RentalDto returnCar(Long rentalId) {
+    public CompletedRentalDto returnCar(Long rentalId) {
         Rental rental = rentalRepository
                 .findById(rentalId)
-                .orElseThrow(()
-                        -> new RentalNotFoundException("Rental not found or already returned with id : "
-                        + rentalId));
+                .orElseThrow(() ->
+                        new RentalNotFoundException("Rental not found with id: " + rentalId));
+
+        if (rental.getActualReturnDate() != null) {
+            throw new RentalReturnedException("Rental with id " + rentalId + " has already been returned.");
+        }
 
         rental.setActualReturnDate(LocalDate.now());
 
@@ -65,8 +81,6 @@ public class RentalServiceImpl implements RentalService {
         carService.updateCar(car.getId(), car);
 
         rentalRepository.save(rental);
-        return rentalMapper.toDto(rental);
+        return rentalMapper.toCompletedDto(rental);
     }
-
 }
-

@@ -1,5 +1,6 @@
 package com.app.car.controller;
 
+import com.app.car.dto.rental.CompletedRentalDto;
 import com.app.car.dto.rental.RentalDto;
 import com.app.car.exception.InsufficientInventoryException;
 import com.app.car.exception.RentalNotFoundException;
@@ -52,9 +53,9 @@ public class RentalController {
 
     @PostMapping("/{rentalId}/return")
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER')")
-    public ResponseEntity<RentalDto> returnCar(@PathVariable Long rentalId) {
+    public ResponseEntity<CompletedRentalDto> returnCar(@PathVariable Long rentalId) {
         try {
-            RentalDto returnedRental = rentalService.returnCar(rentalId);
+            CompletedRentalDto returnedRental = rentalService.returnCar(rentalId);
             return ResponseEntity.ok(returnedRental);
         } catch (RentalNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

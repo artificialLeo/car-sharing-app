@@ -6,24 +6,16 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RentalDto {
-
+public class CompletedRentalDto {
     private Long id;
-
-    @NotNull(message = "Rental date cannot be null")
     private LocalDate rentalDate;
-
     private LocalDate returnDate;
-
+    private LocalDate actualReturnDate;
     private Long carId;
-
     private Long userId;
 }
-
 
