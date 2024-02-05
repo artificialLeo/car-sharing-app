@@ -12,6 +12,7 @@ import com.app.car.service.RentalService;
 import com.app.car.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,11 +22,13 @@ import java.util.List;
 public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final CarService carService;
+    private final TelegramNotificationServiceImpl telegramNotificationService;
     private final RentalMapper rentalMapper;
 
     @Override
-    public RentalDto addRental(RentalDto rentalDto) {
+    public RentalDto addRental(RentalDto rentalDto) throws TelegramApiException {
         Car car = carService.getCarById(rentalDto.getCarId());
+        telegramNotificationService.sendNotification("DTO added!!!");
 
         List<Rental> activeRentalsForCar = rentalRepository.findByCar_IdAndActualReturnDateIsNull(car.getId());
         if (!activeRentalsForCar.isEmpty()) {

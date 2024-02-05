@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class RentalController {
             return ResponseEntity.status(HttpStatus.CREATED).body(addedRental);
         } catch (InsufficientInventoryException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
         }
     }
 
