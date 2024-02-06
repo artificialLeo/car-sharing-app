@@ -17,7 +17,9 @@ public interface RentalMapper {
 
     @Mapping(source = "carId", target = "car.id")
     @Mapping(source = "userId", target = "user.id")
+    @Mapping(target = "actualReturnDate", ignore = true)
     Rental toEntity(RentalDto rentalDto);
+
 
     @Mapping(source = "car.id", target = "carId")
     @Mapping(source = "user.id", target = "userId")
