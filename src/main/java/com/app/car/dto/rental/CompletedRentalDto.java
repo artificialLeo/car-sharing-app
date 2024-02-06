@@ -1,11 +1,9 @@
 package com.app.car.dto.rental;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-
 
 @Data
 @AllArgsConstructor
@@ -18,4 +16,3 @@ public class CompletedRentalDto {
     private Long carId;
     private Long userId;
 }
-

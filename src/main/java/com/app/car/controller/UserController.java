@@ -8,7 +8,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
@@ -17,7 +23,7 @@ public class UserController {
     private final UserService userService;
 
     @PutMapping("/{id}/role")
-//    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<Void> updateUserRole(
             @PathVariable Long id,
             @RequestParam UserRole newRole
@@ -27,14 +33,14 @@ public class UserController {
     }
 
     @GetMapping("/me")
-//    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseEntity<UserProfileDto> getMyProfileInfo() {
         UserProfileDto myProfile = userService.getMyProfileInfo();
         return ResponseEntity.ok(myProfile);
     }
 
     @PutMapping("/me")
-//    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseEntity<UpdateUserProfileDto> updateMyProfileInfo(
             @Valid @RequestBody UpdateUserProfileDto updatedUser
     ) {
@@ -43,4 +49,3 @@ public class UserController {
         return ResponseEntity.ok(updatedUserProfile);
     }
 }
-

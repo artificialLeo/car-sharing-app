@@ -1,13 +1,10 @@
 package com.app.car.dto.rental;
 
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 @Data
 @AllArgsConstructor
@@ -25,5 +22,3 @@ public class RentalDto {
 
     private Long userId;
 }
-
-

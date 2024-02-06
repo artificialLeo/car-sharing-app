@@ -5,14 +5,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
@@ -48,7 +46,7 @@ public class JwtUtil {
     }
 
     public String getUsername(String token) {
-        return  getClaimFromToken(token, Claims::getSubject);
+        return getClaimFromToken(token, Claims::getSubject);
     }
 
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {

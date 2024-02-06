@@ -12,15 +12,9 @@ import com.app.car.model.enums.UserRole;
 import com.app.car.repository.UserRepository;
 import com.app.car.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,7 +28,9 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserRegistrationResponseDto register(UserRegistrationRequestDto requestDto) throws RegistrationException {
+    public UserRegistrationResponseDto register(
+            UserRegistrationRequestDto requestDto
+    ) throws RegistrationException {
         if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new RegistrationException("Can't register user with email "
                     + requestDto.getEmail());
@@ -100,19 +96,15 @@ public class UserServiceImpl implements UserService {
             currentUser.setEmail(updatedUser.email());
         }
 
-        if (StringUtils.hasText(updatedUser.password()) && StringUtils.hasText(updatedUser.repeatPassword())
-                && updatedUser.password().equals(updatedUser.repeatPassword())) {
+        if (
+                StringUtils.hasText(updatedUser.password())
+                && StringUtils.hasText(updatedUser.repeatPassword())
+                && updatedUser.password().equals(updatedUser.repeatPassword())
+        ) {
             currentUser.setPassword(passwordEncoder.encode(updatedUser.password()));
         }
 
         userRepository.save(currentUser);
-
-        // Problem with edit
-        UserDetails updatedUserDetails = userDetailsService.loadUserByUsername(currentUser.getEmail());
-        Authentication newAuthentication = new UsernamePasswordAuthenticationToken(
-                updatedUserDetails, authentication.getCredentials(), updatedUserDetails.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
 
         return updatedUser;
     }

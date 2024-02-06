@@ -1,6 +1,9 @@
 package com.app.car.service.impl;
 
+import com.app.car.dto.car.CarShortInfoDto;
+import com.app.car.dto.car.CarUpdateDto;
 import com.app.car.exception.CarNotFoundException;
+import com.app.car.mapper.CarMapper;
 import com.app.car.model.Car;
 import com.app.car.repository.CarRepository;
 import com.app.car.service.CarService;
@@ -8,14 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
+    private final CarMapper carMapper;
 
     @Override
     public Car addCar(Car car) {
@@ -23,8 +24,8 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Page<Car> getAllCars(Pageable pageable) {
-        return carRepository.findAll(pageable);
+    public Page<CarShortInfoDto> getAllCars(Pageable pageable) {
+        return carRepository.findAllBy(pageable);
     }
 
     @Override
@@ -33,38 +34,17 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Car updateCar(Long id, Car updatedCar) {
+    public Car updateCar(Long id, CarUpdateDto updatedCarDto) {
         Car existingCar = carRepository.findById(id)
-                .orElseThrow(() -> new CarNotFoundException("Car not found with id: "
-                        + id));
+                .orElseThrow(() -> new CarNotFoundException("Car not found with id: " + id));
 
-        if (StringUtils.hasText(updatedCar.getModel())) {
-            existingCar.setModel(updatedCar.getModel());
-        }
-
-        if (StringUtils.hasText(updatedCar.getBrand())) {
-            existingCar.setBrand(updatedCar.getBrand());
-        }
-
-        if (updatedCar.getType() != null) {
-            existingCar.setType(updatedCar.getType());
-        }
-
-        if (updatedCar.getInventory() >= 0) {
-            existingCar.setInventory(updatedCar.getInventory());
-        }
-
-        if (updatedCar.getDailyFee() != null) {
-            existingCar.setDailyFee(updatedCar.getDailyFee());
-        }
+        carMapper.updateCarFromDto(updatedCarDto, existingCar);
 
         return carRepository.save(existingCar);
     }
-
 
     @Override
     public void deleteCar(Long id) {
         carRepository.deleteById(id);
     }
 }
-

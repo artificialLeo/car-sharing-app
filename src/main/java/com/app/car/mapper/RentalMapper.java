@@ -3,14 +3,12 @@ package com.app.car.mapper;
 import com.app.car.dto.rental.CompletedRentalDto;
 import com.app.car.dto.rental.RentalDto;
 import com.app.car.model.Rental;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring")
 public interface RentalMapper {
-
     @Mapping(source = "car.id", target = "carId")
     @Mapping(source = "user.id", target = "userId")
     RentalDto toDto(Rental rental);
@@ -26,5 +24,3 @@ public interface RentalMapper {
     @Mapping(source = "actualReturnDate", target = "actualReturnDate")
     CompletedRentalDto toCompletedDto(Rental rental);
 }
-
-
