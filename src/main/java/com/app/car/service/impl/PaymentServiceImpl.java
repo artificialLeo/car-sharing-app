@@ -99,7 +99,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     public BigDecimal calculateTotalPrice(Long rentalId) {
         Rental rental = rentalRepository.findById(rentalId).orElse(null);
-        if (rental != null) {
+
+        if (rental != null && rental.getReturnDate() != null && rental.getActualReturnDate() != null) {
             LocalDate returnDate = rental.getReturnDate();
             LocalDate actualReturnDate = rental.getActualReturnDate();
 
@@ -110,8 +111,7 @@ public class PaymentServiceImpl implements PaymentService {
             BigDecimal totalPrice = BigDecimal.ZERO;
 
             if (overdueDays > 0) {
-                totalPrice = dailyFee.multiply(BigDecimal
-                        .valueOf(overdueDays)).multiply(fineMultiplier);
+                totalPrice = dailyFee.multiply(BigDecimal.valueOf(overdueDays)).multiply(fineMultiplier);
             }
 
             return totalPrice;
@@ -119,6 +119,7 @@ public class PaymentServiceImpl implements PaymentService {
             return BigDecimal.ZERO;
         }
     }
+
 
     public String buildSuccessUrl(Long rentalId) {
         return "/payments/success?rentalId=" + rentalId;

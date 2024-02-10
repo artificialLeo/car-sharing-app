@@ -24,7 +24,6 @@ import org.springframework.util.StringUtils;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsService userDetailsService;
     private final UserMapper userMapper;
 
     @Override

@@ -2,6 +2,7 @@ package com.app.car.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
+import lombok.NoArgsConstructor;
 
 public record UpdateUserProfileDto(
         @Size(min = 3, max = 35, message = "First name must be between 3 and 35 characters")
