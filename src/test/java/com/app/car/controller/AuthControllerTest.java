@@ -22,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsNull.notNullValue;
 
@@ -34,68 +35,62 @@ public class AuthControllerTest extends TestContainerManager {
     private Integer port;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AuthenticationService authenticationService;
+    private UserRegistrationRequestDto registrationRequestDto;
+    private UserLoginRequestDto loginRequestDto;
+    private User userForLogin;
 
     @BeforeEach
     void init() {
         RestAssured.baseURI = "http://localhost:" + port + "/auth";
         userRepository.deleteAll();
+
+        registrationRequestDto = new UserRegistrationRequestDto();
+        registrationRequestDto.setEmail("test@example.com");
+        registrationRequestDto.setFirstName("John");
+        registrationRequestDto.setLastName("Doe");
+        registrationRequestDto.setPassword("password");
+        registrationRequestDto.setRepeatPassword("password");
+
+        loginRequestDto = new UserLoginRequestDto("smail@example.com", "password");
+
+        userForLogin = User.builder()
+                .email("smail@example.com")
+                .password(passwordEncoder.encode("password"))
+                .role(UserRole.ROLE_CUSTOMER)
+                .build();
+
+        userRepository.save(userForLogin);
     }
 
     @Test
     void registration_ValidRegistrationRequest_Success() throws RegistrationException {
-        UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto();
-        requestDto.setEmail("test@example.com");
-        requestDto.setFirstName("John");
-        requestDto.setLastName("Doe");
-        requestDto.setPassword("password");
-        requestDto.setRepeatPassword("password");
-
         Response response = given()
                 .contentType("application/json")
-                .body(requestDto)
+                .body(registrationRequestDto)
                 .when()
                 .post("/registration")
                 .andReturn();
 
         response.then()
                 .statusCode(HttpStatus.OK.value())
-                .body("email", equalTo("test@example.com"))
-                .body("id", equalTo(1));
-
+                .body("email", equalTo("test@example.com"));
     }
-
 
     @Test
     void login_ValidLoginRequest_Success() {
-        UserLoginRequestDto requestDto = new UserLoginRequestDto("smail@example.com", "password");
-        User user = User.builder()
-                .email("smail@example.com")
-                .password(passwordEncoder.encode("password"))
-                .role(UserRole.ROLE_CUSTOMER)
-                .build();
-
-        userRepository.save(user);
-
-        System.out.println(userRepository.findByEmail("smail@example.com"));
-
         given()
                 .contentType("application/json")
-                .body(requestDto)
+                .body(loginRequestDto)
                 .when()
                 .post("/login")
                 .then()
-                .statusCode(HttpStatus.OK.value());
-//                .body("token", equalTo("your_expected_token_here"));
+                .statusCode(HttpStatus.OK.value())
+                .body("token", is(notNullValue()));
     }
 }
 
