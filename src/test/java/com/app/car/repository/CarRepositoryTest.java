@@ -60,10 +60,10 @@ class CarRepositoryTest {
     @Test
     @DisplayName("findAllBy -> Return CarShortInfoDto Page")
     public void findAllBy_ReturnCarShortInfoDtoPage() {
-        Page<Car> carPage = carRepository.findAllBy(PageRequest.of(0, 10));
+        Page<Car> actual = carRepository.findAllBy(PageRequest.of(0, 10));
 
-        assertNotNull(carPage);
-        assertEquals(2, carPage.getTotalElements());
-        assertEquals(2, carPage.getContent().size());
+        assertNotNull(actual);
+        assertEquals(2, actual.getTotalElements());
+        assertEquals(2, actual.getContent().size());
     }
 }

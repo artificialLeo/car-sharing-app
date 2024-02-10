@@ -102,7 +102,7 @@ public class RentalServiceImpl implements RentalService {
     public void checkOverdueRentals() {
         LocalDate today = LocalDate.now();
         List<Rental> overdueRentals = rentalRepository
-                .findByActualReturnDateBeforeAndActualReturnDateIsNull(today);
+                .findByReturnDateBeforeAndActualReturnDateIsNull(today);
 
         if (overdueRentals.isEmpty()) {
             telegramNotificationService.sendNotification("No rentals overdue today!");

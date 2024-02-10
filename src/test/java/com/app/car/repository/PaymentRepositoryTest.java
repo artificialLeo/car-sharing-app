@@ -94,33 +94,33 @@ public class PaymentRepositoryTest {
     @Test
     @DisplayName("findBySessionId -> Existing Session ID")
     public void findBySessionId_ExistingSessionId_ReturnPayment() {
-        Payment foundPayment = paymentRepository.findBySessionId(payment1.getSessionId());
+        Payment actual = paymentRepository.findBySessionId(payment1.getSessionId());
 
-        assertNotNull(foundPayment);
-        assertEquals(payment1.getId(), foundPayment.getId());
+        assertNotNull(actual);
+        assertEquals(payment1.getId(), actual.getId());
     }
 
     @Test
     @DisplayName("findBySessionId -> Nonexistent Session ID")
     public void findBySessionId_NonexistentSessionId_ReturnNull() {
-        Payment foundPayment = paymentRepository.findBySessionId("nonexistent_session_id");
+        Payment actual = paymentRepository.findBySessionId("nonexistent_session_id");
 
-        assertNull(foundPayment);
+        assertNull(actual);
     }
 
     @Test
     @DisplayName("findByRentalId -> Existing Rental ID")
     public void findByRentalId_ExistingRentalId_ReturnPayments() {
-        List<Payment> payments = paymentRepository.findByRentalId(rental.getId());
+        List<Payment> actual = paymentRepository.findByRentalId(rental.getId());
 
-        assertEquals(2, payments.size());
+        assertEquals(2, actual.size());
     }
 
     @Test
     @DisplayName("findByRentalId -> Nonexistent Rental ID")
     public void findByRentalId_NonexistentRentalId_ReturnEmptyList() {
-        List<Payment> payments = paymentRepository.findByRentalId(999L);
+        List<Payment> actual = paymentRepository.findByRentalId(999L);
 
-        assertTrue(payments.isEmpty());
+        assertTrue(actual.isEmpty());
     }
 }

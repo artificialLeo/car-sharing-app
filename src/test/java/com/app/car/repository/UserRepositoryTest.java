@@ -27,13 +27,13 @@ class UserRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-    private User user;
+    private User user1;
     private User user2;
 
     @BeforeEach
     void init() {
         userRepository.deleteAll();
-        user = User.builder()
+        user1 = User.builder()
                 .email("test@example.com")
                 .firstName("John")
                 .lastName("Doe")
@@ -49,7 +49,7 @@ class UserRepositoryTest {
                 .role(UserRole.ROLE_CUSTOMER)
                 .build();
 
-        userRepository.saveAll(List.of(user, user2));
+        userRepository.saveAll(List.of(user1, user2));
     }
 
     @AfterEach
@@ -60,27 +60,27 @@ class UserRepositoryTest {
     @Test
     @DisplayName("findByEmail -> Existing Email")
     public void findByEmail_ExistingEmail_ReturnUser() {
-        User foundUser = userRepository.findByEmail(user.getEmail()).orElse(null);
+        User actual = userRepository.findByEmail(user1.getEmail()).orElse(null);
 
-        assertNotNull(foundUser);
-        assertEquals(user.getEmail(), foundUser.getEmail());
-        assertEquals(user.getPassword(), foundUser.getPassword());
+        assertNotNull(actual);
+        assertEquals(user1.getEmail(), actual.getEmail());
+        assertEquals(user1.getPassword(), actual.getPassword());
     }
 
     @Test
     @DisplayName("findByEmail -> Nonexistent Email")
     public void findByEmail_NonexistentEmail_ReturnNull() {
-        User foundUser = userRepository.findByEmail("nonexistent@example.com").orElse(null);
+        User actual = userRepository.findByEmail("nonexistent@example.com").orElse(null);
 
-        assertNull(foundUser);
+        assertNull(actual);
     }
 
     @Test
     @DisplayName("shouldGetAllCustomers -> Single User")
     public void shouldGetAllCustomers_SingleUser_ReturnMatchingEmail() {
-        User savedUser = userRepository.save(user);
+        User actual = userRepository.save(user1);
 
-        assertEquals(user.getEmail(), savedUser.getEmail());
+        assertEquals(user1.getEmail(), actual.getEmail());
     }
 
     @Test
@@ -89,7 +89,7 @@ class UserRepositoryTest {
         List<User> allUsers = userRepository.findAll();
 
         assertEquals(2, allUsers.size());
-        assertTrue(allUsers.stream().anyMatch(u -> u.getEmail().equals(user.getEmail())));
+        assertTrue(allUsers.stream().anyMatch(u -> u.getEmail().equals(user1.getEmail())));
         assertTrue(allUsers.stream().anyMatch(u -> u.getEmail().equals(user2.getEmail())));
     }
 }

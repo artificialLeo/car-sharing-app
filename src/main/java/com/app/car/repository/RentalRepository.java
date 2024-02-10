@@ -20,7 +20,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
 
     List<Rental> findByCar_IdAndActualReturnDateIsNull(Long id);
 
-    List<Rental> findByActualReturnDateBeforeAndActualReturnDateIsNull(LocalDate today);
+    List<Rental> findByReturnDateBeforeAndActualReturnDateIsNull(LocalDate today);
 
     List<Rental> findByUserId(Long userId);
 }

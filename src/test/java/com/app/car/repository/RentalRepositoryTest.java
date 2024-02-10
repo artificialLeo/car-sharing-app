@@ -54,7 +54,8 @@ public class RentalRepositoryTest {
         carRepository.save(car);
 
         rental1 = Rental.builder()
-                .rentalDate(LocalDate.now().minusDays(5))
+                .rentalDate(LocalDate.now().minusDays(4))
+                .returnDate(LocalDate.now().minusDays(2))
                 .car(car)
                 .user(user)
                 .build();
@@ -80,7 +81,8 @@ public class RentalRepositoryTest {
     public void findByUserIdAndActualReturnDateIsNull_ExistingUserNoRentals_ReturnEmptyList() {
         List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(user.getId(), true);
 
-        assertTrue(rentals.isEmpty());
+        boolean expected = rentals.isEmpty();
+        assertTrue(expected);
     }
 
     @Test
@@ -88,7 +90,9 @@ public class RentalRepositoryTest {
     public void findByUserIdAndActualReturnDateIsNull_ExistingUserActiveRentals_ReturnRentals() {
         List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(user.getId(), false);
 
-        assertEquals(2, rentals.size());
+        int expected = 2;
+        int actual = rentals.size();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -96,15 +100,19 @@ public class RentalRepositoryTest {
     public void findByCar_IdAndActualReturnDateIsNull_ActiveRentalsForCar_ReturnRentals() {
         List<Rental> rentals = rentalRepository.findByCar_IdAndActualReturnDateIsNull(car.getId());
 
-        assertEquals(2, rentals.size());
+        int expected = 2;
+        int actual = rentals.size();
+        assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("findByActualReturnDateBeforeAndActualReturnDateIsNull -> Rentals Overdue")
     public void findByActualReturnDateBeforeAndActualReturnDateIsNull_RentalsOverdue_ReturnRentals() {
-        List<Rental> rentals = rentalRepository.findByActualReturnDateBeforeAndActualReturnDateIsNull(LocalDate.now().minusDays(2));
+        List<Rental> rentals = rentalRepository.findByReturnDateBeforeAndActualReturnDateIsNull(LocalDate.now().minusDays(1));
 
-        assertEquals(1, rentals.size());
+        int expected = 1;
+        int actual = rentals.size();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -112,6 +120,8 @@ public class RentalRepositoryTest {
     public void findByUserId_AllRentalsForUser_ReturnRentals() {
         List<Rental> rentals = rentalRepository.findByUserId(user.getId());
 
-        assertEquals(2, rentals.size());
+        int expected = 2;
+        int actual = rentals.size();
+        assertEquals(expected, actual);
     }
 }
