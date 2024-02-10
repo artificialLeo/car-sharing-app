@@ -25,7 +25,8 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Page<CarShortInfoDto> getAllCars(Pageable pageable) {
-        return carRepository.findAllBy(pageable);
+        Page<Car> carPage = carRepository.findAllBy(pageable);
+        return carPage.map(carMapper::carToCarShortInfoDto);
     }
 
     @Override

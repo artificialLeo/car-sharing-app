@@ -1,5 +1,6 @@
 package com.app.car.mapper;
 
+import com.app.car.dto.car.CarShortInfoDto;
 import com.app.car.dto.car.CarUpdateDto;
 import com.app.car.model.Car;
 import org.mapstruct.Mapper;
@@ -14,4 +15,6 @@ public interface CarMapper {
     void updateCarFromDto(CarUpdateDto updatedCarDto, @MappingTarget Car existingCar);
 
     CarUpdateDto toCarUpdateDto(Car car);
+
+    CarShortInfoDto carToCarShortInfoDto(Car car);
 }
