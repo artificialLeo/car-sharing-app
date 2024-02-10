@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,4 +20,7 @@ public class PaymentRequestDto {
 
     @NotNull(message = "Payment type cannot be null")
     private PaymentType paymentType;
+
+    @NotNull(message = "Payment type cannot be null")
+    private BigDecimal paymentAmount;
 }

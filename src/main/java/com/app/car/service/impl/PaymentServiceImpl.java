@@ -59,8 +59,11 @@ public class PaymentServiceImpl implements PaymentService {
 
             Payment payment = new Payment();
             payment.setRental(rental);
-            payment.setSessionUrl(sessionUrl);
-            payment.setSessionId("");
+            payment.setSessionUrl("sessionUrl");
+            payment.setStatus(PaymentStatus.PENDING);
+            payment.setType(PaymentType.PAYMENT);
+            payment.setSessionId("sessionId");
+            payment.setAmountToPay(paymentRequest.getPaymentAmount());
             paymentRepository.save(payment);
 
             return paymentMapper.toDto(payment);
@@ -92,9 +95,10 @@ public class PaymentServiceImpl implements PaymentService {
         return rentalRepository
                 .findByUserId(userId)
                 .stream()
-                .flatMap(rental -> paymentRepository.findByRentalId(rental.getId()).stream())
+                .flatMap(rental -> paymentRepository
+                        .findByRentalId(rental.getId()).stream())
                 .map(paymentMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public BigDecimal calculateTotalPrice(Long rentalId) {

@@ -7,8 +7,6 @@ import com.app.car.exception.RegistrationException;
 import com.app.car.model.User;
 import com.app.car.model.enums.UserRole;
 import com.app.car.repository.UserRepository;
-import com.app.car.security.AuthenticationService;
-import com.app.car.service.UserService;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +21,6 @@ import org.springframework.test.context.ContextConfiguration;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 
