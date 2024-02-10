@@ -8,6 +8,7 @@ import com.app.car.model.User;
 import com.app.car.model.enums.CarType;
 import com.app.car.model.enums.PaymentStatus;
 import com.app.car.model.enums.PaymentType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(initializers = TestContainerManager.class)
 public class PaymentRepositoryTest {
-
     @Autowired
     PaymentRepository paymentRepository;
 
@@ -42,94 +42,85 @@ public class PaymentRepositoryTest {
     @Autowired
     CarRepository carRepository;
 
+    private User user;
+    private Car car;
+    private Rental rental;
+    private Payment payment1;
+    private Payment payment2;
+
     @BeforeEach
-    void setUp() {
+    void init() {
+        user = User.builder().email("test@example.com").build();
+        userRepository.save(user);
+
+        car = Car.builder()
+                .model("Model X")
+                .brand("Tesla")
+                .type(CarType.SUV)
+                .inventory(1)
+                .dailyFee(BigDecimal.valueOf(100.00))
+                .build();
+        carRepository.save(car);
+
+        rental = Rental.builder()
+                .rentalDate(LocalDate.now().minusDays(5))
+                .car(car)
+                .user(user)
+                .build();
+        rentalRepository.save(rental);
+
+        payment1 = Payment.builder()
+                .status(PaymentStatus.PAID)
+                .type(PaymentType.PAYMENT)
+                .rental(rental)
+                .sessionUrl("http://payment-url.com")
+                .sessionId("payment_session_id")
+                .amountToPay(BigDecimal.valueOf(200.00))
+                .build();
+
+        payment2 = Payment.builder().rental(rental).build();
+
+        paymentRepository.saveAll(List.of(payment1, payment2));
+    }
+
+    @AfterEach
+    void destroy() {
+        carRepository.deleteAll();
         paymentRepository.deleteAll();
         rentalRepository.deleteAll();
-        carRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
     @DisplayName("findBySessionId -> Existing Session ID")
     public void findBySessionId_ExistingSessionId_ReturnPayment() {
-        // Given
-        Rental rental = createRental();
-        Payment payment = createPayment(rental);
-        paymentRepository.save(payment);
+        Payment foundPayment = paymentRepository.findBySessionId(payment1.getSessionId());
 
-        // When
-        Payment foundPayment = paymentRepository.findBySessionId(payment.getSessionId());
-
-        // Then
         assertNotNull(foundPayment);
-        assertEquals(payment.getId(), foundPayment.getId());
+        assertEquals(payment1.getId(), foundPayment.getId());
     }
 
     @Test
     @DisplayName("findBySessionId -> Nonexistent Session ID")
     public void findBySessionId_NonexistentSessionId_ReturnNull() {
-        // When
         Payment foundPayment = paymentRepository.findBySessionId("nonexistent_session_id");
 
-        // Then
         assertNull(foundPayment);
     }
 
     @Test
     @DisplayName("findByRentalId -> Existing Rental ID")
     public void findByRentalId_ExistingRentalId_ReturnPayments() {
-        // Given
-        Rental rental = createRental();
-        Payment payment1 = createPayment(rental);
-        Payment payment2 = createPayment(rental);
-        paymentRepository.saveAll(List.of(payment1, payment2));
-
-        // When
         List<Payment> payments = paymentRepository.findByRentalId(rental.getId());
 
-        // Then
         assertEquals(2, payments.size());
     }
 
     @Test
     @DisplayName("findByRentalId -> Nonexistent Rental ID")
     public void findByRentalId_NonexistentRentalId_ReturnEmptyList() {
-        // When
         List<Payment> payments = paymentRepository.findByRentalId(999L);
 
-        // Then
         assertTrue(payments.isEmpty());
     }
-
-    private Rental createRental() {
-        User user = new User();
-        user.setEmail("test@example.com");
-        userRepository.save(user);
-
-        Car car = new Car();
-        car.setModel("Model X");
-        car.setBrand("Tesla");
-        car.setType(CarType.SUV);
-        car.setInventory(1);
-        car.setDailyFee(BigDecimal.valueOf(100.00));
-        carRepository.save(car);
-
-        Rental rental = new Rental();
-        rental.setRentalDate(LocalDate.now().minusDays(5));
-        rental.setCar(car);
-        rental.setUser(user);
-        return rentalRepository.save(rental);
-    }
-
-    private Payment createPayment(Rental rental) {
-        Payment payment = new Payment();
-        payment.setStatus(PaymentStatus.PAID);
-        payment.setType(PaymentType.PAYMENT);
-        payment.setRental(rental);
-        payment.setSessionUrl("http://payment-url.com");
-        payment.setSessionId("payment_session_id");
-        payment.setAmountToPay(BigDecimal.valueOf(200.00));
-        return payment;
-    }
-
 }

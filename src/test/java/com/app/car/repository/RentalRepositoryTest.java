@@ -5,27 +5,26 @@ import com.app.car.model.Car;
 import com.app.car.model.Rental;
 import com.app.car.model.User;
 import com.app.car.model.enums.CarType;
-import com.app.car.repository.CarRepository;
-import com.app.car.repository.RentalRepository;
-import com.app.car.repository.UserRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(initializers = TestContainerManager.class)
 public class RentalRepositoryTest {
-
     @Autowired
     RentalRepository rentalRepository;
 
@@ -35,8 +34,42 @@ public class RentalRepositoryTest {
     @Autowired
     CarRepository carRepository;
 
+    private User user;
+    private Car car;
+    private Rental rental1;
+    private Rental rental2;
+
     @BeforeEach
-    void setUp() {
+    void init() {
+        user = User.builder().email("test@example.com").build();
+        userRepository.save(user);
+
+        car = Car.builder()
+                .model("Model X")
+                .brand("Tesla")
+                .type(CarType.SUV)
+                .inventory(1)
+                .dailyFee(BigDecimal.valueOf(100.00))
+                .build();
+        carRepository.save(car);
+
+        rental1 = Rental.builder()
+                .rentalDate(LocalDate.now().minusDays(5))
+                .car(car)
+                .user(user)
+                .build();
+        rentalRepository.save(rental1);
+
+        rental2 = Rental.builder()
+                .rentalDate(LocalDate.now().minusDays(2))
+                .car(car)
+                .user(user)
+                .build();
+        rentalRepository.save(rental2);
+    }
+
+    @AfterEach
+    void destroy() {
         rentalRepository.deleteAll();
         userRepository.deleteAll();
         carRepository.deleteAll();
@@ -45,53 +78,40 @@ public class RentalRepositoryTest {
     @Test
     @DisplayName("findByUserIdAndActualReturnDateIsNull -> Existing User, No Rentals")
     public void findByUserIdAndActualReturnDateIsNull_ExistingUserNoRentals_ReturnEmptyList() {
-        // Given
-        User user = new User();
-        user.setEmail("test@example.com");
-        userRepository.save(user);
-
-        // When
         List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(user.getId(), true);
 
-        // Then
         assertTrue(rentals.isEmpty());
     }
 
     @Test
     @DisplayName("findByUserIdAndActualReturnDateIsNull -> Existing User, Active Rentals")
     public void findByUserIdAndActualReturnDateIsNull_ExistingUserActiveRentals_ReturnRentals() {
-        // Given
-        User user = new User();
-        user.setEmail("test@example.com");
-        userRepository.save(user);
-
-        Car car = new Car();
-        car.setModel("Model X");
-        car.setBrand("Tesla");
-        car.setType(CarType.SUV);
-        car.setInventory(1);
-        car.setDailyFee(BigDecimal.valueOf(100.00));
-        carRepository.save(car);
-
-        Rental rental1 = new Rental();
-        rental1.setRentalDate(LocalDate.now().minusDays(5));
-        rental1.setCar(car);
-        rental1.setUser(user);
-        rentalRepository.save(rental1);
-
-        Rental rental2 = new Rental();
-        rental2.setRentalDate(LocalDate.now().minusDays(2));
-        rental2.setCar(car);
-        rental2.setUser(user);
-        rentalRepository.save(rental2);
-
-        // When
         List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(user.getId(), false);
 
-        // Then
         assertEquals(2, rentals.size());
     }
 
-    // Repeat a similar structure for the other test methods
-}
+    @Test
+    @DisplayName("findByCar_IdAndActualReturnDateIsNull -> Active Rentals for Car")
+    public void findByCar_IdAndActualReturnDateIsNull_ActiveRentalsForCar_ReturnRentals() {
+        List<Rental> rentals = rentalRepository.findByCar_IdAndActualReturnDateIsNull(car.getId());
 
+        assertEquals(2, rentals.size());
+    }
+
+    @Test
+    @DisplayName("findByActualReturnDateBeforeAndActualReturnDateIsNull -> Rentals Overdue")
+    public void findByActualReturnDateBeforeAndActualReturnDateIsNull_RentalsOverdue_ReturnRentals() {
+        List<Rental> rentals = rentalRepository.findByActualReturnDateBeforeAndActualReturnDateIsNull(LocalDate.now().minusDays(2));
+
+        assertEquals(1, rentals.size());
+    }
+
+    @Test
+    @DisplayName("findByUserId -> All Rentals for User")
+    public void findByUserId_AllRentalsForUser_ReturnRentals() {
+        List<Rental> rentals = rentalRepository.findByUserId(user.getId());
+
+        assertEquals(2, rentals.size());
+    }
+}
