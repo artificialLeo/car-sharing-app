@@ -60,6 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean isPermittedEndpoint(String requestPath) {
         return requestPath.startsWith("/auth/registration")
                 || requestPath.startsWith("/auth/login")
-                || requestPath.startsWith("//health");
+                || requestPath.startsWith("actuator/health");
     }
 }
