@@ -1,4 +1,4 @@
-package com.app.car;
+package com.app.car.config;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContextInitializer;
@@ -6,11 +6,16 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.MySQLContainer;
 
-public class TestContainerManager implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-    private static final MySQLContainer<?> selfMySQLContainer = new MySQLContainer<>("mysql:8.0.36");
+public class TestContainerManager extends TestDatabaseInit implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    static final MySQLContainer<?> selfMySQLContainer = new MySQLContainer<>("mysql:8.0.36");
 
     static {
         selfMySQLContainer.start();
+        registerShutdownHook();
+    }
+
+    private static void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(selfMySQLContainer::stop));
     }
 
     @Override
@@ -22,5 +27,4 @@ public class TestContainerManager implements ApplicationContextInitializer<Confi
                 "spring.datasource.password=" + selfMySQLContainer.getPassword()
         );
     }
-
 }

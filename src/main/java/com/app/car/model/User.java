@@ -1,6 +1,7 @@
 package com.app.car.model;
 
 import com.app.car.model.enums.UserRole;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.List;
+
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +32,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String email;
 
     private String firstName;

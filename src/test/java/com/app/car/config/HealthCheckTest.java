@@ -1,4 +1,4 @@
-package com.app.car;
+package com.app.car.config;
 
 import com.app.car.util.HealthCheck;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,5 +60,3 @@ public class HealthCheckTest {
         assertEquals(Health.down().withDetail("Error Code", 1).build(), result);
     }
 }
-
-

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -21,4 +23,7 @@ public class CarUpdateDto {
 
     @NotNull(message = "Type cannot be null")
     private CarType type;
+
+    @NotNull(message = "DailyFee cannot be null")
+    private BigDecimal dailyFee;
 }

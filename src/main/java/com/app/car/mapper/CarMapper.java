@@ -11,7 +11,6 @@ import org.mapstruct.MappingTarget;
 public interface CarMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "inventory", ignore = true)
-    @Mapping(target = "dailyFee", ignore = true)
     void updateCarFromDto(CarUpdateDto updatedCarDto, @MappingTarget Car existingCar);
 
     CarUpdateDto toCarUpdateDto(Car car);

@@ -1,27 +1,13 @@
 package com.app.car.controller;
 
-import com.app.car.TestContainerManager;
+import com.app.car.config.TestContainerManager;
 import com.app.car.dto.rental.RentalDto;
-import com.app.car.dto.user.UserLoginRequestDto;
 import com.app.car.model.Car;
-import com.app.car.model.Rental;
-import com.app.car.model.User;
 import com.app.car.model.enums.CarType;
-import com.app.car.model.enums.UserRole;
-import com.app.car.repository.CarRepository;
-import com.app.car.repository.RentalRepository;
-import com.app.car.repository.UserRepository;
-import com.app.car.security.AuthenticationService;
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
@@ -36,76 +22,8 @@ import static org.hamcrest.Matchers.notNullValue;
 @ContextConfiguration(initializers = TestContainerManager.class)
 public class RentalControllerTest extends TestContainerManager {
 
-    @LocalServerPort
-    private Integer port;
-
-    @Autowired
-    private AuthenticationService authenticationService;
-
-    @Autowired
-    private RentalRepository rentalRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private CarRepository carRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    private String authToken;
-    private Rental rental;
-    private Car car;
-    private User user;
-
-    @BeforeEach
-    void init() {
-        RestAssured.baseURI = "http://localhost:" + port + "/rentals";
-        rentalRepository.deleteAll();
-        userRepository.deleteAll();
-        carRepository.deleteAll();
-
-        user = User.builder()
-                .email("testuser@example.com")
-                .password(passwordEncoder.encode("password"))
-                .role(UserRole.ROLE_CUSTOMER)
-                .build();
-        userRepository.save(user);
-
-        UserLoginRequestDto loginRequestDto = new UserLoginRequestDto("testuser@example.com", "password");
-        authToken = authenticationService.authenticate(loginRequestDto).token();
-
-
-        car = Car.builder()
-                .model("Toyota")
-                .brand("Camry")
-                .type(CarType.SEDAN)
-                .inventory(10)
-                .dailyFee(new BigDecimal("50.00"))
-                .build();
-
-        carRepository.save(car);
-
-
-        rental = Rental.builder()
-                .rentalDate(LocalDate.now())
-                .returnDate(LocalDate.now().plusDays(7))
-                .car(car)
-                .user(user)
-                .build();
-
-        rentalRepository.save(rental);
-    }
-
-    @AfterEach
-    void clear() {
-        rentalRepository.deleteAll();
-        userRepository.deleteAll();
-        carRepository.deleteAll();
-    }
-
     @Test
+    @DisplayName("Rental add")
     void addRental_ValidRentalRequest_Success() {
         Car car1 = Car.builder()
                 .id(111L)
@@ -122,7 +40,7 @@ public class RentalControllerTest extends TestContainerManager {
                 .rentalDate(LocalDate.now())
                 .returnDate(LocalDate.now().plusDays(7))
                 .carId(car1.getId())
-                .userId(user.getId())
+                .userId(customer.getId())
                 .build();
 
         given()
@@ -139,12 +57,13 @@ public class RentalControllerTest extends TestContainerManager {
     }
 
     @Test
+    @DisplayName("Rentals by user and status")
     void getRentalsByUserAndStatus_ValidRequest_Success() {
 
         given()
                 .contentType("application/json")
                 .auth().oauth2(authToken)
-                .param("userId", user.getId())
+                .param("userId", customer.getId())
                 .param("isActive", false)
                 .when()
                 .get()
@@ -154,6 +73,7 @@ public class RentalControllerTest extends TestContainerManager {
     }
 
     @Test
+    @DisplayName("Rentals by id - existing")
     void getRentalById_ExistingRentalId_Success() {
         Long rentalId = rental.getId();
 
@@ -169,6 +89,7 @@ public class RentalControllerTest extends TestContainerManager {
     }
 
     @Test
+    @DisplayName("Rentals by id - not existing")
     void getRentalById_NonExistingRentalId_NotFound() {
         Long nonExistingRentalId = 99L;
 
@@ -183,6 +104,7 @@ public class RentalControllerTest extends TestContainerManager {
     }
 
     @Test
+    @DisplayName("Car return")
     void returnCar_ExistingRentalId_Success() {
         Long rentalId = rental.getId();
 
@@ -198,6 +120,7 @@ public class RentalControllerTest extends TestContainerManager {
     }
 
     @Test
+    @DisplayName("Car return - fail")
     void returnCar_NonExistingRentalId_NotFound() {
         Long nonExistingRentalId = 99L;
 

@@ -1,85 +1,25 @@
 package com.app.car.repository;
 
-import com.app.car.TestContainerManager;
-import com.app.car.model.Car;
+import com.app.car.config.TestContainerManager;
 import com.app.car.model.Rental;
-import com.app.car.model.User;
-import com.app.car.model.enums.CarType;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = TestContainerManager.class)
-public class RentalRepositoryTest {
-    @Autowired
-    RentalRepository rentalRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    CarRepository carRepository;
-
-    private User user;
-    private Car car;
-    private Rental rental1;
-    private Rental rental2;
-
-    @BeforeEach
-    void init() {
-        user = User.builder().email("test@example.com").build();
-        userRepository.save(user);
-
-        car = Car.builder()
-                .model("Model X")
-                .brand("Tesla")
-                .type(CarType.SUV)
-                .inventory(1)
-                .dailyFee(BigDecimal.valueOf(100.00))
-                .build();
-        carRepository.save(car);
-
-        rental1 = Rental.builder()
-                .rentalDate(LocalDate.now().minusDays(4))
-                .returnDate(LocalDate.now().minusDays(2))
-                .car(car)
-                .user(user)
-                .build();
-        rentalRepository.save(rental1);
-
-        rental2 = Rental.builder()
-                .rentalDate(LocalDate.now().minusDays(2))
-                .car(car)
-                .user(user)
-                .build();
-        rentalRepository.save(rental2);
-    }
-
-    @AfterEach
-    void destroy() {
-        rentalRepository.deleteAll();
-        userRepository.deleteAll();
-        carRepository.deleteAll();
-    }
-
+public class RentalRepositoryTest extends TestContainerManager {
     @Test
     @DisplayName("findByUserIdAndActualReturnDateIsNull -> Existing User, No Rentals")
     public void findByUserIdAndActualReturnDateIsNull_ExistingUserNoRentals_ReturnEmptyList() {
-        List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(user.getId(), true);
+        List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(customer.getId(), true);
 
         boolean expected = rentals.isEmpty();
         assertTrue(expected);
@@ -88,9 +28,9 @@ public class RentalRepositoryTest {
     @Test
     @DisplayName("findByUserIdAndActualReturnDateIsNull -> Existing User, Active Rentals")
     public void findByUserIdAndActualReturnDateIsNull_ExistingUserActiveRentals_ReturnRentals() {
-        List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(user.getId(), false);
+        List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(customer.getId(), false);
 
-        int expected = 2;
+        int expected = 1;
         int actual = rentals.size();
         assertEquals(expected, actual);
     }
@@ -100,7 +40,7 @@ public class RentalRepositoryTest {
     public void findByCar_IdAndActualReturnDateIsNull_ActiveRentalsForCar_ReturnRentals() {
         List<Rental> rentals = rentalRepository.findByCar_IdAndActualReturnDateIsNull(car.getId());
 
-        int expected = 2;
+        int expected = 1;
         int actual = rentals.size();
         assertEquals(expected, actual);
     }
@@ -108,7 +48,12 @@ public class RentalRepositoryTest {
     @Test
     @DisplayName("findByActualReturnDateBeforeAndActualReturnDateIsNull -> Rentals Overdue")
     public void findByActualReturnDateBeforeAndActualReturnDateIsNull_RentalsOverdue_ReturnRentals() {
-        List<Rental> rentals = rentalRepository.findByReturnDateBeforeAndActualReturnDateIsNull(LocalDate.now().minusDays(1));
+        List<Rental> rentals = rentalRepository
+                .findByReturnDateBeforeAndActualReturnDateIsNull(
+                        LocalDate
+                                .now()
+                                .minusDays(4)
+                );
 
         int expected = 1;
         int actual = rentals.size();
@@ -118,9 +63,9 @@ public class RentalRepositoryTest {
     @Test
     @DisplayName("findByUserId -> All Rentals for User")
     public void findByUserId_AllRentalsForUser_ReturnRentals() {
-        List<Rental> rentals = rentalRepository.findByUserId(user.getId());
+        List<Rental> rentals = rentalRepository.findByUserId(customer.getId());
 
-        int expected = 2;
+        int expected = 1;
         int actual = rentals.size();
         assertEquals(expected, actual);
     }
