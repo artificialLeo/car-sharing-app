@@ -4,9 +4,8 @@ import com.app.car.dto.user.UpdateUserProfileDto;
 import com.app.car.dto.user.UserProfileDto;
 import com.app.car.dto.user.UserRegistrationRequestDto;
 import com.app.car.dto.user.UserRegistrationResponseDto;
-import com.app.car.exception.MockException;
-import com.app.car.exception.RegistrationException;
-import com.app.car.exception.UserNotFoundException;
+import com.app.car.exception.user.UserRegistrationException;
+import com.app.car.exception.user.UserNotFoundException;
 import com.app.car.mapper.UserMapper;
 import com.app.car.model.User;
 import com.app.car.model.enums.UserRole;
@@ -51,11 +50,7 @@ public class UserServiceImplTest {
 
     @BeforeEach
     void init() {
-        try {
-            MockitoAnnotations.openMocks(this);
-        } catch (Exception e) {
-            throw new MockException("Error initializing mocks : " + e);
-        }
+        MockitoAnnotations.openMocks(this);
 
         registrationRequestDto = UserRegistrationRequestDto.builder()
                 .email("test@example.com")
@@ -84,7 +79,7 @@ public class UserServiceImplTest {
 
     @Test
     @DisplayName("register success")
-    void register_ValidRegistrationRequest_Success() throws RegistrationException {
+    void register_ValidRegistrationRequest_Success() throws UserRegistrationException {
         when(userRepository.findByEmail(registrationRequestDto.getEmail())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(registrationRequestDto.getPassword())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(new User());
@@ -100,7 +95,7 @@ public class UserServiceImplTest {
     void register_UserWithEmailAlreadyExists_ExceptionThrown() {
         when(userRepository.findByEmail(registrationRequestDto.getEmail())).thenReturn(Optional.of(new User()));
 
-        assertThrows(RegistrationException.class, () -> userService.register(registrationRequestDto));
+        assertThrows(UserRegistrationException.class, () -> userService.register(registrationRequestDto));
     }
 
     @Test

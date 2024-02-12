@@ -4,13 +4,13 @@ import com.app.car.dto.user.UpdateUserProfileDto;
 import com.app.car.dto.user.UserProfileDto;
 import com.app.car.dto.user.UserRegistrationRequestDto;
 import com.app.car.dto.user.UserRegistrationResponseDto;
-import com.app.car.exception.RegistrationException;
+import com.app.car.exception.user.UserRegistrationException;
 import com.app.car.model.enums.UserRole;
 
 public interface UserService {
     UserRegistrationResponseDto register(
             UserRegistrationRequestDto requestDto
-    ) throws RegistrationException;
+    ) throws UserRegistrationException;
 
     void updateUserRole(Long userId, UserRole newRole);
 

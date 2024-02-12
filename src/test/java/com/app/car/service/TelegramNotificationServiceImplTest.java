@@ -1,40 +1,20 @@
 package com.app.car.service;
 
-import com.app.car.dto.user.UpdateUserProfileDto;
-import com.app.car.dto.user.UserProfileDto;
-import com.app.car.dto.user.UserRegistrationRequestDto;
-import com.app.car.exception.MockException;
-import com.app.car.mapper.UserMapper;
 import com.app.car.model.Car;
 import com.app.car.model.User;
-import com.app.car.model.enums.UserRole;
 import com.app.car.notification.NotificationTelegramBot;
 import com.app.car.repository.CarRepository;
 import com.app.car.repository.UserRepository;
 import com.app.car.service.impl.TelegramNotificationServiceImpl;
-import com.app.car.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.app.car.dto.rental.RentalDto;
-import com.app.car.exception.CarNotFoundException;
-import com.app.car.exception.TelegramExecutionException;
-import com.app.car.exception.UserNotFoundException;
-import com.app.car.notification.NotificationTelegramBot;
-import com.app.car.repository.CarRepository;
-import com.app.car.repository.UserRepository;
-import com.app.car.service.impl.TelegramNotificationServiceImpl;
-import lombok.Builder;
-import org.junit.jupiter.api.BeforeEach;
+import com.app.car.exception.telegramNotification.TelegramExecutionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 

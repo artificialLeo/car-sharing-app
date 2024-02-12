@@ -2,8 +2,7 @@ package com.app.car.service;
 
 import com.app.car.dto.car.CarShortInfoDto;
 import com.app.car.dto.car.CarUpdateDto;
-import com.app.car.exception.CarNotFoundException;
-import com.app.car.exception.MockException;
+import com.app.car.exception.car.CarIdNotFoundException;
 import com.app.car.mapper.CarMapper;
 import com.app.car.model.Car;
 import com.app.car.repository.CarRepository;
@@ -41,11 +40,7 @@ public class CarServiceImplTest {
 
     @BeforeEach
     void init() {
-        try {
-            MockitoAnnotations.openMocks(this);
-        } catch (Exception e) {
-            throw new MockException("Error initializing mocks : " + e);
-        }
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -93,11 +88,11 @@ public class CarServiceImplTest {
         Long carId = 1L;
         when(carRepository.findById(carId)).thenReturn(Optional.empty());
 
-        Car result = carService.getCarById(carId);
+        assertThrows(CarIdNotFoundException.class, () -> carService.getCarById(carId));
 
-        Assertions.assertNull(result);
         verify(carRepository, times(1)).findById(carId);
     }
+
 
     @Test
     @DisplayName("updateCar success")
@@ -122,7 +117,7 @@ public class CarServiceImplTest {
         CarUpdateDto updatedCarDto = new CarUpdateDto();
         when(carRepository.findById(carId)).thenReturn(Optional.empty());
 
-        assertThrows(CarNotFoundException.class, () -> carService.updateCar(carId, updatedCarDto));
+        assertThrows(CarIdNotFoundException.class, () -> carService.updateCar(carId, updatedCarDto));
         verify(carRepository, times(1)).findById(carId);
     }
 

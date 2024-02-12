@@ -2,7 +2,7 @@ package com.app.car.service;
 
 import com.app.car.dto.payment.PaymentRequestDto;
 import com.app.car.dto.payment.PaymentResponseDto;
-import com.app.car.exception.MockException;
+import com.app.car.exception.rental.RentalIdNotFoundException;
 import com.app.car.mapper.PaymentMapper;
 import com.app.car.model.Payment;
 import com.app.car.model.Rental;
@@ -29,6 +29,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,11 +53,7 @@ public class PaymentServiceImplTest {
 
     @BeforeEach
     void init() {
-        try {
-            MockitoAnnotations.openMocks(this);
-        } catch (Exception e) {
-            throw new MockException("Error initializing mocks : " + e);
-        }
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -161,11 +158,11 @@ public class PaymentServiceImplTest {
 
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.empty());
 
-        BigDecimal result = paymentService.calculateTotalPrice(rentalId);
+        assertThrows(RentalIdNotFoundException.class, () -> paymentService.calculateTotalPrice(rentalId));
 
-        assertEquals(BigDecimal.ZERO, result);
         verify(rentalRepository, times(1)).findById(rentalId);
     }
+
 
     @Test
     @DisplayName("buildSuccessUrl success")

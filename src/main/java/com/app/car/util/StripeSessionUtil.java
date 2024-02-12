@@ -1,5 +1,6 @@
 package com.app.car.util;
 
+import com.app.car.exception.payment.PaymentSessionCreationException;
 import com.app.car.model.enums.PaymentType;
 import com.stripe.Stripe;
 import com.stripe.model.checkout.Session;
@@ -22,7 +23,7 @@ public class StripeSessionUtil {
             Long rentalId,
             PaymentType paymentType,
             BigDecimal unitAmount
-    ) {
+    ) throws PaymentSessionCreationException {
         Stripe.apiKey = stripeSecretKey;
 
         Map<String, Object> sessionParams = new HashMap<>();
@@ -36,7 +37,7 @@ public class StripeSessionUtil {
             Session session = Session.create(sessionParams);
             return session.getUrl();
         } catch (Exception e) {
-            return null;
+            throw new PaymentSessionCreationException(e);
         }
     }
 

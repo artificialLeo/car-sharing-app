@@ -1,9 +1,9 @@
 package com.app.car.service.impl;
 
 import com.app.car.dto.rental.RentalDto;
-import com.app.car.exception.CarNotFoundException;
-import com.app.car.exception.TelegramExecutionException;
-import com.app.car.exception.UserNotFoundException;
+import com.app.car.exception.car.CarIdNotFoundException;
+import com.app.car.exception.telegramNotification.TelegramExecutionException;
+import com.app.car.exception.user.UserNotFoundException;
 import com.app.car.notification.NotificationTelegramBot;
 import com.app.car.repository.CarRepository;
 import com.app.car.repository.UserRepository;
@@ -28,7 +28,7 @@ public class TelegramNotificationServiceImpl implements TelegramNotificationServ
         try {
             notificationTelegramBot.execute(sendMessage);
         } catch (TelegramApiException e) {
-            throw new TelegramExecutionException("Error executing Telegram API operation", e);
+            throw new TelegramExecutionException(e);
         }
     }
 
@@ -42,14 +42,12 @@ public class TelegramNotificationServiceImpl implements TelegramNotificationServ
         String carModel = carRepository
                 .findById(rental.getCarId())
                 .orElseThrow(()
-                        -> new CarNotFoundException("Car with id not found : "
-                        + rental.getCarId()))
+                        -> new CarIdNotFoundException(rental.getCarId()))
                 .getModel();
         String userName = userRepository
                 .findById(rental.getUserId())
                 .orElseThrow(()
-                        -> new UserNotFoundException("Car with id not found : "
-                        + rental.getUserId()))
+                        -> new UserNotFoundException(rental.getUserId()))
                 .getUsername();
         fullMessage.append("Car model: ").append(carModel).append("\n");
         fullMessage.append("Your username: ").append(userName).append("\n");
@@ -59,7 +57,7 @@ public class TelegramNotificationServiceImpl implements TelegramNotificationServ
         try {
             notificationTelegramBot.execute(sendMessage);
         } catch (TelegramApiException e) {
-            throw new TelegramExecutionException("Error executing Telegram API operation", e);
+            throw new TelegramExecutionException(e);
         }
     }
 

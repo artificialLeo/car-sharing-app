@@ -2,8 +2,8 @@ package com.app.car.controller;
 
 import com.app.car.dto.rental.CompletedRentalDto;
 import com.app.car.dto.rental.RentalDto;
-import com.app.car.exception.InsufficientInventoryException;
-import com.app.car.exception.RentalNotFoundException;
+import com.app.car.exception.car.CarInsufficientInventoryException;
+import com.app.car.exception.rental.RentalIdNotFoundException;
 import com.app.car.service.RentalService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -32,8 +32,8 @@ public class RentalController {
         try {
             RentalDto addedRental = rentalService.addRental(rentalDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(addedRental);
-        } catch (InsufficientInventoryException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (CarInsufficientInventoryException e) {
+            return ResponseEntity.badRequest().build();
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
@@ -54,8 +54,8 @@ public class RentalController {
         try {
             RentalDto rental = rentalService.getRentalById(id);
             return ResponseEntity.ok(rental);
-        } catch (RentalNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (RentalIdNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -65,8 +65,8 @@ public class RentalController {
         try {
             CompletedRentalDto returnedRental = rentalService.returnCar(rentalId);
             return ResponseEntity.ok(returnedRental);
-        } catch (RentalNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (RentalIdNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

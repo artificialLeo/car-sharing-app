@@ -3,23 +3,18 @@ package com.app.car.service;
 import com.app.car.dto.car.CarUpdateDto;
 import com.app.car.dto.rental.CompletedRentalDto;
 import com.app.car.dto.rental.RentalDto;
-import com.app.car.exception.CarAlreadyRentedException;
-import com.app.car.exception.InsufficientInventoryException;
-import com.app.car.exception.MockException;
-import com.app.car.exception.NoRentalsFoundException;
-import com.app.car.exception.RentalNotFoundException;
-import com.app.car.exception.RentalReturnedException;
+import com.app.car.exception.car.CarIdAlreadyRentedException;
+import com.app.car.exception.car.CarInsufficientInventoryException;
+import com.app.car.exception.rental.NoRentalsFoundException;
+import com.app.car.exception.rental.RentalIdNotFoundException;
+import com.app.car.exception.rental.RentalIdReturnedException;
 import com.app.car.mapper.CarMapper;
-import com.app.car.mapper.PaymentMapper;
 import com.app.car.mapper.RentalMapper;
 import com.app.car.model.Car;
 import com.app.car.model.Rental;
-import com.app.car.repository.PaymentRepository;
 import com.app.car.repository.RentalRepository;
-import com.app.car.service.impl.PaymentServiceImpl;
 import com.app.car.service.impl.RentalServiceImpl;
 import com.app.car.service.impl.TelegramNotificationServiceImpl;
-import com.app.car.util.StripeSessionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.InjectMocks;
@@ -27,9 +22,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -61,11 +53,7 @@ public class RentalServiceImplTest {
 
     @BeforeEach
     void init() {
-        try {
-            MockitoAnnotations.openMocks(this);
-        } catch (Exception e) {
-            throw new MockException("Error initializing mocks : " + e);
-        }
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -105,7 +93,7 @@ public class RentalServiceImplTest {
         when(carService.getCarById(1L)).thenReturn(car);
         when(rentalRepository.findByCar_IdAndActualReturnDateIsNull(1L)).thenReturn(Collections.singletonList(new Rental()));
 
-        assertThrows(CarAlreadyRentedException.class, () -> rentalService.addRental(rentalDto));
+        assertThrows(CarIdAlreadyRentedException.class, () -> rentalService.addRental(rentalDto));
 
         verify(carService, never()).updateCar(anyLong(), any());
         verify(telegramNotificationService, never()).rentalNotification(any(), any());
@@ -123,7 +111,7 @@ public class RentalServiceImplTest {
 
         when(carService.getCarById(1L)).thenReturn(car);
 
-        assertThrows(InsufficientInventoryException.class, () -> rentalService.addRental(rentalDto));
+        assertThrows(CarInsufficientInventoryException.class, () -> rentalService.addRental(rentalDto));
 
         verify(carService, never()).updateCar(anyLong(), any());
         verify(telegramNotificationService, never()).rentalNotification(any(), any());
@@ -180,7 +168,7 @@ public class RentalServiceImplTest {
 
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.empty());
 
-        assertThrows(RentalNotFoundException.class, () -> rentalService.getRentalById(rentalId));
+        assertThrows(RentalIdNotFoundException.class, () -> rentalService.getRentalById(rentalId));
     }
 
     @Test
@@ -215,7 +203,7 @@ public class RentalServiceImplTest {
 
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental));
 
-        assertThrows(RentalReturnedException.class, () -> rentalService.returnCar(rentalId));
+        assertThrows(RentalIdReturnedException.class, () -> rentalService.returnCar(rentalId));
     }
 
     @Test
@@ -225,7 +213,7 @@ public class RentalServiceImplTest {
 
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.empty());
 
-        assertThrows(RentalNotFoundException.class, () -> rentalService.returnCar(rentalId));
+        assertThrows(RentalIdNotFoundException.class, () -> rentalService.returnCar(rentalId));
     }
 
     @Test

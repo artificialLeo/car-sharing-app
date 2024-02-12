@@ -2,7 +2,6 @@ package com.app.car.service;
 
 import com.app.car.dto.user.UserLoginRequestDto;
 import com.app.car.dto.user.UserLoginResponseDto;
-import com.app.car.exception.MockException;
 import com.app.car.security.AuthenticationService;
 import com.app.car.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,15 +33,11 @@ public class AuthenticationServiceTest {
 
     @BeforeEach
     void init() {
-        try {
-            MockitoAnnotations.openMocks(this);
-        } catch (Exception e) {
-            throw new MockException("Error initializing mocks : " + e);
-        }
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    @DisplayName("Authenticate success")
+    @DisplayName("authenticate success")
     void authenticate_ValidCredentials_ReturnsUserLoginResponseDto() {
         UserLoginRequestDto requestDto = new UserLoginRequestDto("test@example.com", "password");
         Authentication authentication = mock(Authentication.class);

@@ -4,9 +4,10 @@ import com.app.car.dto.user.UserLoginRequestDto;
 import com.app.car.dto.user.UserLoginResponseDto;
 import com.app.car.dto.user.UserRegistrationRequestDto;
 import com.app.car.dto.user.UserRegistrationResponseDto;
-import com.app.car.exception.RegistrationException;
+import com.app.car.exception.user.UserRegistrationException;
 import com.app.car.security.AuthenticationService;
 import com.app.car.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,13 +23,15 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/registration")
+    @Operation(summary = "User creation")
     public UserRegistrationResponseDto registration(
             @RequestBody UserRegistrationRequestDto requestDto
-    ) throws RegistrationException {
+    ) throws UserRegistrationException {
         return userService.register(requestDto);
     }
 
     @PostMapping("/login")
+    @Operation(summary = "User login")
     public UserLoginResponseDto login(
             @RequestBody @Valid UserLoginRequestDto requestDto
     ) {

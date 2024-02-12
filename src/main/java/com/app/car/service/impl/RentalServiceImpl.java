@@ -2,11 +2,11 @@ package com.app.car.service.impl;
 
 import com.app.car.dto.rental.CompletedRentalDto;
 import com.app.car.dto.rental.RentalDto;
-import com.app.car.exception.CarAlreadyRentedException;
-import com.app.car.exception.InsufficientInventoryException;
-import com.app.car.exception.NoRentalsFoundException;
-import com.app.car.exception.RentalNotFoundException;
-import com.app.car.exception.RentalReturnedException;
+import com.app.car.exception.car.CarIdAlreadyRentedException;
+import com.app.car.exception.car.CarInsufficientInventoryException;
+import com.app.car.exception.rental.NoRentalsFoundException;
+import com.app.car.exception.rental.RentalIdNotFoundException;
+import com.app.car.exception.rental.RentalIdReturnedException;
 import com.app.car.mapper.CarMapper;
 import com.app.car.mapper.RentalMapper;
 import com.app.car.model.Car;
@@ -36,9 +36,7 @@ public class RentalServiceImpl implements RentalService {
         List<Rental> activeRentalsForCar = rentalRepository
                 .findByCar_IdAndActualReturnDateIsNull(car.getId());
         if (!activeRentalsForCar.isEmpty()) {
-            throw new CarAlreadyRentedException("Car with ID "
-                    + car.getId()
-                    + " is already rented and not returned yet.");
+            throw new CarIdAlreadyRentedException(car.getId());
         }
 
         if (car.getInventory() > 0) {
@@ -50,8 +48,7 @@ public class RentalServiceImpl implements RentalService {
             telegramNotificationService.rentalNotification(rentalDto, "New rental added.");
             return rentalMapper.toDto(addedRental);
         } else {
-            throw new InsufficientInventoryException("Car inventory is insufficient with ID: "
-                    + car.getId());
+            throw new CarInsufficientInventoryException(car.getId());
         }
     }
 
@@ -61,17 +58,16 @@ public class RentalServiceImpl implements RentalService {
                 .findByUserIdAndActualReturnDateIsNull(userId, carReturned);
 
         if (rentals.isEmpty()) {
-            throw new NoRentalsFoundException("No rentals found for user with ID: "
-                    + userId + " and carReturned: " + carReturned);
+            throw new NoRentalsFoundException(userId, carReturned);
         }
 
         return rentalMapper.toDtoList(rentals);
     }
 
     @Override
-    public RentalDto getRentalById(Long id) {
-        Rental rental = rentalRepository.findById(id)
-                .orElseThrow(() -> new RentalNotFoundException("Rental not found with id: " + id));
+    public RentalDto getRentalById(Long rentalId) {
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new RentalIdNotFoundException(rentalId));
 
         return rentalMapper.toDto(rental);
     }
@@ -81,11 +77,10 @@ public class RentalServiceImpl implements RentalService {
         Rental rental = rentalRepository
                 .findById(rentalId)
                 .orElseThrow(() ->
-                        new RentalNotFoundException("Rental not found with id: " + rentalId));
+                        new RentalIdNotFoundException(rentalId));
 
         if (rental.getActualReturnDate() != null) {
-            throw new RentalReturnedException("Rental with id "
-                    + rentalId + " has already been returned.");
+            throw new RentalIdReturnedException(rentalId);
         }
 
         rental.setActualReturnDate(LocalDate.now());

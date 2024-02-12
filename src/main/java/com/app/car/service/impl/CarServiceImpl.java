@@ -2,7 +2,7 @@ package com.app.car.service.impl;
 
 import com.app.car.dto.car.CarShortInfoDto;
 import com.app.car.dto.car.CarUpdateDto;
-import com.app.car.exception.CarNotFoundException;
+import com.app.car.exception.car.CarIdNotFoundException;
 import com.app.car.mapper.CarMapper;
 import com.app.car.model.Car;
 import com.app.car.repository.CarRepository;
@@ -31,13 +31,15 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Car getCarById(Long id) {
-        return carRepository.findById(id).orElse(null);
+        return carRepository.findById(id).orElseThrow(()
+                -> new CarIdNotFoundException(id));
     }
 
     @Override
     public Car updateCar(Long id, CarUpdateDto updatedCarDto) {
         Car existingCar = carRepository.findById(id)
-                .orElseThrow(() -> new CarNotFoundException("Car not found with id: " + id));
+                .orElseThrow(()
+                        -> new CarIdNotFoundException(id));
 
         carMapper.updateCarFromDto(updatedCarDto, existingCar);
 

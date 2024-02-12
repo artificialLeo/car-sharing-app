@@ -2,6 +2,7 @@ package com.app.car.service.impl;
 
 import com.app.car.dto.payment.PaymentRequestDto;
 import com.app.car.dto.payment.PaymentResponseDto;
+import com.app.car.exception.rental.RentalIdNotFoundException;
 import com.app.car.mapper.PaymentMapper;
 import com.app.car.model.Payment;
 import com.app.car.model.Rental;
@@ -47,7 +48,9 @@ public class PaymentServiceImpl implements PaymentService {
                 unitAmount
         );
 
-        Rental rental = rentalRepository.findById(rentalId).orElse(null);
+        Rental rental = rentalRepository
+                .findById(rentalId)
+                .orElseThrow(() -> new RentalIdNotFoundException(rentalId));
 
         if (rental != null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -68,7 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             return paymentMapper.toDto(payment);
         } else {
-            return null;
+            throw new RentalIdNotFoundException(rentalId);
         }
     }
 
@@ -102,7 +105,9 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     public BigDecimal calculateTotalPrice(Long rentalId) {
-        Rental rental = rentalRepository.findById(rentalId).orElse(null);
+        Rental rental = rentalRepository
+                .findById(rentalId)
+                .orElseThrow(() -> new RentalIdNotFoundException(rentalId));
 
         if (rental != null && rental.getReturnDate() != null && rental.getActualReturnDate() != null) {
             LocalDate returnDate = rental.getReturnDate();

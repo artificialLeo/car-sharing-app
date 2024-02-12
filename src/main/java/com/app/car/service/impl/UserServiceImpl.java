@@ -1,11 +1,14 @@
 package com.app.car.service.impl;
 
+import static com.app.car.exception.user.UserRegistrationException.ExceptionType.EMAIL_ALREADY_EXISTS;
+import static com.app.car.exception.user.UserRegistrationException.ExceptionType.PASSWORDS_DO_NOT_MATCH;
+
 import com.app.car.dto.user.UpdateUserProfileDto;
 import com.app.car.dto.user.UserProfileDto;
 import com.app.car.dto.user.UserRegistrationRequestDto;
 import com.app.car.dto.user.UserRegistrationResponseDto;
-import com.app.car.exception.RegistrationException;
-import com.app.car.exception.UserNotFoundException;
+import com.app.car.exception.user.UserRegistrationException;
+import com.app.car.exception.user.UserNotFoundException;
 import com.app.car.mapper.UserMapper;
 import com.app.car.model.User;
 import com.app.car.model.enums.UserRole;
@@ -14,7 +17,6 @@ import com.app.car.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -29,14 +31,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRegistrationResponseDto register(
             UserRegistrationRequestDto requestDto
-    ) throws RegistrationException {
+    ) throws UserRegistrationException {
         if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
-            throw new RegistrationException("Can't register user with email "
-                    + requestDto.getEmail());
+            throw new UserRegistrationException(EMAIL_ALREADY_EXISTS);
         }
 
         if (!requestDto.getPassword().equals(requestDto.getRepeatPassword())) {
-            throw new RegistrationException("Passwords do not match");
+            throw new UserRegistrationException(PASSWORDS_DO_NOT_MATCH);
         }
 
         User user = new User();
@@ -53,8 +54,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserRole(Long userId, UserRole newRole) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User with id not found : "
-                        + userId));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         user.setRole(newRole);
         userRepository.save(user);
@@ -67,8 +67,7 @@ public class UserServiceImpl implements UserService {
         User currentUser = userRepository
                 .findByEmail(userEmail)
                 .orElseThrow(()
-                        -> new UserNotFoundException("User with e-mail not found : "
-                        + userEmail));
+                        -> new UserNotFoundException(userEmail));
 
         return userMapper.toUserProfileDto(currentUser);
     }
@@ -80,8 +79,7 @@ public class UserServiceImpl implements UserService {
         User currentUser = userRepository
                 .findByEmail(userEmail)
                 .orElseThrow(()
-                        -> new UserNotFoundException("User with e-mail not found : "
-                        + userEmail));
+                        -> new UserNotFoundException(userEmail));
 
         if (StringUtils.hasText(updatedUser.firstName())) {
             currentUser.setFirstName(updatedUser.firstName());
