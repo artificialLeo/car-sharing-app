@@ -60,7 +60,7 @@ public class PaymentServiceImplTest {
     }
 
     @Test
-    @DisplayName("createPaymentSession -> Success")
+    @DisplayName("createPaymentSession success")
     void createPaymentSession_ValidPaymentRequest_Success() {
         PaymentRequestDto paymentRequest = new PaymentRequestDto();
         paymentRequest.setRentalId(1L);
@@ -87,7 +87,7 @@ public class PaymentServiceImplTest {
 
 
     @Test
-    @DisplayName("handleSuccessfulPayment -> Success")
+    @DisplayName("handleSuccessfulPayment success")
     void handleSuccessfulPayment_ValidSessionId_Success() {
         String sessionId = "validSessionId";
         Payment payment = new Payment();
@@ -103,7 +103,7 @@ public class PaymentServiceImplTest {
     }
 
     @Test
-    @DisplayName("handleCancelledPayment -> Success")
+    @DisplayName("handleCancelledPayment success")
     void handleCancelledPayment_ValidSessionId_Success() {
         String sessionId = "validSessionId";
         Payment payment = new Payment();
@@ -119,7 +119,7 @@ public class PaymentServiceImplTest {
     }
 
     @Test
-    @DisplayName("getUserPayments -> Success")
+    @DisplayName("getUserPayments success")
     void getUserPayments_ValidUserId_Success() {
         Long userId = 1L;
         Rental rental = new Rental();
@@ -138,7 +138,7 @@ public class PaymentServiceImplTest {
     }
 
     @Test
-    @DisplayName("calculateTotalPrice -> ReturnsTotalPrice")
+    @DisplayName("calculateTotalPrice success")
     void calculateTotalPrice_ValidRentalId_ReturnsTotalPrice() {
         Long rentalId = 1L;
         Rental rental = new Rental();
@@ -155,7 +155,7 @@ public class PaymentServiceImplTest {
     }
 
     @Test
-    @DisplayName("calculateTotalPrice -> ReturnsZero")
+    @DisplayName("calculateTotalPrice success 0")
     void calculateTotalPrice_InvalidRentalId_ReturnsZero() {
         Long rentalId = 1L;
 
@@ -168,7 +168,7 @@ public class PaymentServiceImplTest {
     }
 
     @Test
-    @DisplayName("buildSuccessUrl -> ReturnsSuccessUrl")
+    @DisplayName("buildSuccessUrl success")
     void buildSuccessUrl_ValidRentalId_ReturnsSuccessUrl() {
         Long rentalId = 1L;
         String result = paymentService.buildSuccessUrl(rentalId);
@@ -176,7 +176,7 @@ public class PaymentServiceImplTest {
     }
 
     @Test
-    @DisplayName("buildCancelUrl -> ReturnsCancelUrl")
+    @DisplayName("buildCancelUrl success")
     void buildCancelUrl_ValidRentalId_ReturnsCancelUrl() {
         Long rentalId = 1L;
         String result = paymentService.buildCancelUrl(rentalId);

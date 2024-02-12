@@ -42,7 +42,7 @@ public class AuthenticationServiceTest {
     }
 
     @Test
-    @DisplayName("authenticate -> Success")
+    @DisplayName("Authenticate success")
     void authenticate_ValidCredentials_ReturnsUserLoginResponseDto() {
         UserLoginRequestDto requestDto = new UserLoginRequestDto("test@example.com", "password");
         Authentication authentication = mock(Authentication.class);

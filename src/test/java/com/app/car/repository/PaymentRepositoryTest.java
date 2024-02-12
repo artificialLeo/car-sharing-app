@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ContextConfiguration(initializers = TestContainerManager.class)
 public class PaymentRepositoryTest extends TestContainerManager {
     @Test
-    @DisplayName("findBySessionId -> Existing Session ID")
+    @DisplayName("Existing Session ID")
     public void findBySessionId_ExistingSessionId_ReturnPayment() {
         Payment actual = paymentRepository.findBySessionId(payment.getSessionId());
 
@@ -27,7 +27,7 @@ public class PaymentRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("findBySessionId -> Nonexistent Session ID")
+    @DisplayName("Nonexistent Session ID")
     public void findBySessionId_NonexistentSessionId_ReturnNull() {
         Payment actual = paymentRepository.findBySessionId("nonexistent_session_id");
 
@@ -35,7 +35,7 @@ public class PaymentRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("findByRentalId -> Existing Rental ID")
+    @DisplayName("Existing Rental ID")
     public void findByRentalId_ExistingRentalId_ReturnPayments() {
         List<Payment> actual = paymentRepository.findByRentalId(rental.getId());
 
@@ -43,7 +43,7 @@ public class PaymentRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("findByRentalId -> Nonexistent Rental ID")
+    @DisplayName("Nonexistent Rental ID")
     public void findByRentalId_NonexistentRentalId_ReturnEmptyList() {
         List<Payment> actual = paymentRepository.findByRentalId(999L);
 

@@ -69,7 +69,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("addRental -> Success")
+    @DisplayName("addRental success")
     void addRental_WithAvailableInventory_Success() {
         RentalDto rentalDto = new RentalDto();
         rentalDto.setCarId(1L);
@@ -94,7 +94,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("addRental -> CarAlreadyRented")
+    @DisplayName("addRental -> CarAlreadyRentedException")
     void addRental_CarAlreadyRented_ExceptionThrown() {
         RentalDto rentalDto = new RentalDto();
         rentalDto.setCarId(1L);
@@ -112,7 +112,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("addRental -> InsufficientInventory")
+    @DisplayName("addRental -> InsufficientInventoryException")
     void addRental_InsufficientInventory_ExceptionThrown() {
         RentalDto rentalDto = new RentalDto();
         rentalDto.setCarId(1L);
@@ -130,7 +130,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("getRentalsByUserAndStatus -> ReturnsRentals")
+    @DisplayName("getRentalsByUserAndStatus success")
     void getRentalsByUserAndStatus_ReturnsRentals() {
         Long userId = 1L;
         boolean carReturned = false;
@@ -147,7 +147,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("getRentalsByUserAndStatus -> ExceptionThrown")
+    @DisplayName("getRentalsByUserAndStatus -> NoRentalsFoundException")
     void getRentalsByUserAndStatus_NoRentalsFound_ExceptionThrown() {
         Long userId = 1L;
         boolean carReturned = false;
@@ -158,7 +158,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("getRentalById -> ReturnsRental")
+    @DisplayName("getRentalById success")
     void getRentalById_ValidId_ReturnsRental() {
         Long rentalId = 1L;
 
@@ -174,7 +174,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("getRentalById -> ExceptionThrown")
+    @DisplayName("getRentalById -> RentalNotFoundException")
     void getRentalById_InvalidId_ExceptionThrown() {
         Long rentalId = 1L;
 
@@ -184,7 +184,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("returnCar -> ReturnsCompleted")
+    @DisplayName("returnCar success")
     void returnCar_ValidRentalId_ReturnsCompletedRentalDto() {
         Long rentalId = 1L;
 
@@ -205,7 +205,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("returnCar -> Returned Exception")
+    @DisplayName("returnCar -> RentalReturnedException")
     void returnCar_RentalAlreadyReturned_ExceptionThrown() {
         Long rentalId = 1L;
 
@@ -219,7 +219,7 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    @DisplayName("returnCar -> NotFound Exception")
+    @DisplayName("returnCar -> RentalNotFoundException")
     void returnCar_RentalNotFound_ExceptionThrown() {
         Long rentalId = 1L;
 

@@ -87,7 +87,7 @@ public class TelegramNotificationServiceImplTest {
     }
 
     @Test
-    @DisplayName("Send Notification -> Success")
+    @DisplayName("sendNotification success")
     void sendNotification_Success() throws TelegramApiException {
         when(notificationTelegramBot.execute(any(SendMessage.class))).thenReturn(null);
 
@@ -97,7 +97,7 @@ public class TelegramNotificationServiceImplTest {
     }
 
     @Test
-    @DisplayName("Send Notification -> Telegram API Exception")
+    @DisplayName("sendNotification -> TelegramExecutionException")
     void sendNotification_TelegramApiException() throws TelegramApiException {
         when(notificationTelegramBot.execute(any(SendMessage.class))).thenThrow(new TelegramApiException("Test Exception"));
 
@@ -107,7 +107,7 @@ public class TelegramNotificationServiceImplTest {
     }
 
     @Test
-    @DisplayName("Rental Notification -> Success")
+    @DisplayName("rentalNotification success")
     void rentalNotification_Success() throws TelegramApiException {
         when(carRepository.findById(1L)).thenReturn(Optional.of(car));
         when(userRepository.findById(2L)).thenReturn(Optional.of(user));

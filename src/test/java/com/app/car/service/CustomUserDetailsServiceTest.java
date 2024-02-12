@@ -31,7 +31,7 @@ public class CustomUserDetailsServiceTest {
     }
 
     @Test
-    @DisplayName("Load User By Email - Success")
+    @DisplayName("Load User By Email success")
     void loadUserByUsername_Success() {
         String userEmail = "test@example.com";
         User mockUser = new User();
@@ -49,7 +49,7 @@ public class CustomUserDetailsServiceTest {
     }
 
     @Test
-    @DisplayName("Load User By Email - User Not Found")
+    @DisplayName("Load User By Email fail")
     void loadUserByUsername_UserNotFound() {
         String userEmail = "nonexistent@example.com";
 

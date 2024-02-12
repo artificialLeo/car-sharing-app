@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ContextConfiguration(initializers = TestContainerManager.class)
 class CarRepositoryTest extends TestContainerManager {
     @Test
-    @DisplayName("findAllBy -> Return CarShortInfoDto Page")
+    @DisplayName("Return all CarShortInfoDto Page")
     public void findAllBy_ReturnCarShortInfoDtoPage() {
         Page<Car> actual = carRepository.findAllBy(PageRequest.of(0, 10));
 

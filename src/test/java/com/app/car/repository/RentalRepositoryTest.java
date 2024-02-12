@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ContextConfiguration(initializers = TestContainerManager.class)
 public class RentalRepositoryTest extends TestContainerManager {
     @Test
-    @DisplayName("findByUserIdAndActualReturnDateIsNull -> Existing User, No Rentals")
+    @DisplayName("Existing User, No Rentals")
     public void findByUserIdAndActualReturnDateIsNull_ExistingUserNoRentals_ReturnEmptyList() {
         List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(customer.getId(), true);
 
@@ -26,7 +26,7 @@ public class RentalRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("findByUserIdAndActualReturnDateIsNull -> Existing User, Active Rentals")
+    @DisplayName("Existing User, Active Rentals")
     public void findByUserIdAndActualReturnDateIsNull_ExistingUserActiveRentals_ReturnRentals() {
         List<Rental> rentals = rentalRepository.findByUserIdAndActualReturnDateIsNull(customer.getId(), false);
 
@@ -36,7 +36,7 @@ public class RentalRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("findByCar_IdAndActualReturnDateIsNull -> Active Rentals for Car")
+    @DisplayName("Active Rentals for Car")
     public void findByCar_IdAndActualReturnDateIsNull_ActiveRentalsForCar_ReturnRentals() {
         List<Rental> rentals = rentalRepository.findByCar_IdAndActualReturnDateIsNull(car.getId());
 
@@ -46,7 +46,7 @@ public class RentalRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("findByActualReturnDateBeforeAndActualReturnDateIsNull -> Rentals Overdue")
+    @DisplayName("Rentals Overdue")
     public void findByActualReturnDateBeforeAndActualReturnDateIsNull_RentalsOverdue_ReturnRentals() {
         List<Rental> rentals = rentalRepository
                 .findByReturnDateBeforeAndActualReturnDateIsNull(
@@ -61,7 +61,7 @@ public class RentalRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("findByUserId -> All Rentals for User")
+    @DisplayName("All Rentals for User")
     public void findByUserId_AllRentalsForUser_ReturnRentals() {
         List<Rental> rentals = rentalRepository.findByUserId(customer.getId());
 

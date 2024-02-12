@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ContextConfiguration(initializers = TestContainerManager.class)
 class UserRepositoryTest extends TestContainerManager {
     @Test
-    @DisplayName("findByEmail -> Existing Email")
+    @DisplayName("Existing Email")
     public void findByEmail_ExistingEmail_ReturnUser() {
         User actual = userRepository.findByEmail(customer.getEmail()).orElse(null);
 
@@ -28,7 +28,7 @@ class UserRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("findByEmail -> Nonexistent Email")
+    @DisplayName("Nonexistent Email")
     public void findByEmail_NonexistentEmail_ReturnNull() {
         User actual = userRepository.findByEmail("nonexistent@example.com").orElse(null);
 
@@ -36,7 +36,7 @@ class UserRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("shouldGetAllCustomers -> Single User")
+    @DisplayName("Single User")
     public void shouldGetAllCustomers_SingleUser_ReturnMatchingEmail() {
         User actual = userRepository.save(customer);
 
@@ -44,7 +44,7 @@ class UserRepositoryTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("shouldGetAllCustomers -> Multiple Users")
+    @DisplayName("Multiple Users")
     public void shouldGetAllCustomers_MultipleUsers_ReturnAllUsers() {
         List<User> allUsers = userRepository.findAll();
 

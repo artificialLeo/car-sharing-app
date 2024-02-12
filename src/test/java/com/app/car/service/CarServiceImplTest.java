@@ -48,10 +48,8 @@ public class CarServiceImplTest {
         }
     }
 
-
-
     @Test
-    @DisplayName("addCar -> Success")
+    @DisplayName("addCar success")
     void addCar_ValidCar_Success() {
         Car car = new Car();
         when(carRepository.save(car)).thenReturn(car);
@@ -63,7 +61,7 @@ public class CarServiceImplTest {
     }
 
     @Test
-    @DisplayName("getAllCars -> Success")
+    @DisplayName("getAllCars success")
     void getAllCars_ValidPageable_Success() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Car> carPage = new PageImpl<>(Collections.singletonList(new Car()));
@@ -77,7 +75,7 @@ public class CarServiceImplTest {
     }
 
     @Test
-    @DisplayName("getCarById -> Found")
+    @DisplayName("getCarById success")
     void getCarById_ExistingId_ReturnsCar() {
         Long carId = 1L;
         Car car = new Car();
@@ -90,7 +88,7 @@ public class CarServiceImplTest {
     }
 
     @Test
-    @DisplayName("getCarById -> Not Found")
+    @DisplayName("getCarById fail")
     void getCarById_NonExistingId_ReturnsNull() {
         Long carId = 1L;
         when(carRepository.findById(carId)).thenReturn(Optional.empty());
@@ -102,7 +100,7 @@ public class CarServiceImplTest {
     }
 
     @Test
-    @DisplayName("updateCar -> Success")
+    @DisplayName("updateCar success")
     void updateCar_ValidIdAndDto_Success() {
         Long carId = 1L;
         CarUpdateDto updatedCarDto = new CarUpdateDto();
@@ -118,7 +116,7 @@ public class CarServiceImplTest {
     }
 
     @Test
-    @DisplayName("updateCar -> Not Found")
+    @DisplayName("updateCar fail")
     void updateCar_NonExistingId_ThrowsException() {
         Long carId = 1L;
         CarUpdateDto updatedCarDto = new CarUpdateDto();
@@ -129,7 +127,7 @@ public class CarServiceImplTest {
     }
 
     @Test
-    @DisplayName("deleteCar -> Success")
+    @DisplayName("deleteCar success")
     void deleteCar_ValidId_Success() {
         Long carId = 1L;
 
@@ -138,4 +136,3 @@ public class CarServiceImplTest {
         verify(carRepository, times(1)).deleteById(carId);
     }
 }
-

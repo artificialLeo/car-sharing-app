@@ -83,7 +83,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("register -> Success")
+    @DisplayName("register success")
     void register_ValidRegistrationRequest_Success() throws RegistrationException {
         when(userRepository.findByEmail(registrationRequestDto.getEmail())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(registrationRequestDto.getPassword())).thenReturn("encodedPassword");
@@ -96,7 +96,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("register -> ExceptionThrown")
+    @DisplayName("register -> RegistrationException")
     void register_UserWithEmailAlreadyExists_ExceptionThrown() {
         when(userRepository.findByEmail(registrationRequestDto.getEmail())).thenReturn(Optional.of(new User()));
 
@@ -104,7 +104,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("updateUserRole -> ValidUserIdAndNewRole")
+    @DisplayName("updateUserRole success")
     void updateUserRole_ValidUserIdAndNewRole_Success() {
         Long userId = 1L;
         UserRole newRole = UserRole.ROLE_MANAGER;
@@ -117,7 +117,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("updateUserRole -> InvalidUserId")
+    @DisplayName("updateUserRole -> UserNotFoundException")
     void updateUserRole_InvalidUserId_ExceptionThrown() {
         Long userId = 1L;
         UserRole newRole = UserRole.ROLE_MANAGER;
@@ -127,7 +127,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("getMyProfileInfo -> ValidAuthentication")
+    @DisplayName("getMyProfileInfo success")
     void getMyProfileInfo_ValidAuthentication_ReturnsUserProfileDto() {
         String userEmail = "test@example.com";
         Authentication authentication = mock(Authentication.class);
@@ -144,7 +144,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("getMyProfileInfo -> InvalidAuthentication")
+    @DisplayName("getMyProfileInfo -> NullPointerException")
     void getMyProfileInfo_InvalidAuthentication_ExceptionThrown() {
         SecurityContextHolder.getContext().setAuthentication(null);
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
@@ -154,7 +154,7 @@ public class UserServiceImplTest {
 
 
     @Test
-    @DisplayName("updateMyProfileInfo -> Success")
+    @DisplayName("updateMyProfileInfo success")
     void updateMyProfileInfo_ValidUpdateUserProfileDto_Success() {
         String userEmail = "test@example.com";
         Authentication authentication = mock(Authentication.class);
@@ -170,7 +170,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("updateMyProfileInfo -> InvalidAuthentication")
+    @DisplayName("updateMyProfileInfo -> NullPointerException")
     void updateMyProfileInfo_InvalidAuthentication_ExceptionThrown() {
         SecurityContextHolder.getContext().setAuthentication(null);
 
