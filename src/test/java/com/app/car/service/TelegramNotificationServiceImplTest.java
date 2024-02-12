@@ -1,5 +1,7 @@
 package com.app.car.service;
 
+import com.app.car.dto.rental.RentalDto;
+import com.app.car.exception.notification.TelegramExecutionException;
 import com.app.car.model.Car;
 import com.app.car.model.User;
 import com.app.car.notification.NotificationTelegramBot;
@@ -7,22 +9,23 @@ import com.app.car.repository.CarRepository;
 import com.app.car.repository.UserRepository;
 import com.app.car.service.impl.TelegramNotificationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import com.app.car.dto.rental.RentalDto;
-import com.app.car.exception.telegramNotification.TelegramExecutionException;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @DisplayName("Telegram Notification Service Tests")
 public class TelegramNotificationServiceImplTest {

@@ -3,6 +3,8 @@ package com.app.car.config;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import com.app.car.security.JwtAuthenticationFilter;
+import com.app.car.util.OpenEndpoints;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +49,12 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/auth/**", "/error")
+                                .requestMatchers(
+                                        Arrays.stream(OpenEndpoints.values())
+                                                .map(OpenEndpoints::getPattern)
+                                                .toArray(String[]::new)
+                                )
+
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()

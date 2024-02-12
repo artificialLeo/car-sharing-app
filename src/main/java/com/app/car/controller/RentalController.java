@@ -5,6 +5,7 @@ import com.app.car.dto.rental.RentalDto;
 import com.app.car.exception.car.CarInsufficientInventoryException;
 import com.app.car.exception.rental.RentalIdNotFoundException;
 import com.app.car.service.RentalService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class RentalController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Operation(summary = "Add a rental")
     public ResponseEntity<RentalDto> addRental(@Valid @RequestBody RentalDto rentalDto) {
         try {
             RentalDto addedRental = rentalService.addRental(rentalDto);
@@ -41,6 +43,7 @@ public class RentalController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Operation(summary = "Get rentals by user and status")
     public ResponseEntity<List<RentalDto>> getRentalsByUserAndStatus(
             @RequestParam Long userId,
             @RequestParam(required = false, defaultValue = "true") boolean isActive) {
@@ -50,6 +53,7 @@ public class RentalController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER')")
+    @Operation(summary = "Get rental by ID")
     public ResponseEntity<RentalDto> getRentalById(@PathVariable Long id) {
         try {
             RentalDto rental = rentalService.getRentalById(id);
@@ -61,6 +65,7 @@ public class RentalController {
 
     @PostMapping("/{rentalId}/return")
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER')")
+    @Operation(summary = "Return a rental car")
     public ResponseEntity<CompletedRentalDto> returnCar(@PathVariable Long rentalId) {
         try {
             CompletedRentalDto returnedRental = rentalService.returnCar(rentalId);
@@ -70,3 +75,4 @@ public class RentalController {
         }
     }
 }
+

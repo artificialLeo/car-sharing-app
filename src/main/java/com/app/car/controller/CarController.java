@@ -4,6 +4,7 @@ import com.app.car.dto.car.CarShortInfoDto;
 import com.app.car.dto.car.CarUpdateDto;
 import com.app.car.model.Car;
 import com.app.car.service.CarService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,12 +30,14 @@ public class CarController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Operation(summary = "Add a new car")
     public Car addCar(@RequestBody Car car) {
         return carService.addCar(car);
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER')")
+    @Operation(summary = "Get all cars")
     public ResponseEntity<Page<CarShortInfoDto>> getAllCars(
             @PageableDefault(
                     sort = "id",
@@ -46,19 +49,23 @@ public class CarController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER')")
+    @Operation(summary = "Get a car by ID")
     public Car getCarById(@PathVariable Long id) {
         return carService.getCarById(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Operation(summary = "Update a car by ID")
     public Car updateCar(@PathVariable Long id, @Valid @RequestBody CarUpdateDto carUpdateDto) {
         return carService.updateCar(id, carUpdateDto);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Operation(summary = "Delete a car by ID")
     public void deleteCar(@PathVariable Long id) {
         carService.deleteCar(id);
     }
 }
+

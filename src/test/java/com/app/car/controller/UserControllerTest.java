@@ -1,7 +1,6 @@
 package com.app.car.controller;
 
 import com.app.car.config.TestContainerManager;
-import com.app.car.dto.user.UpdateUserProfileDto;
 import com.app.car.model.enums.UserRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -2,7 +2,7 @@ package com.app.car.service.impl;
 
 import com.app.car.dto.rental.RentalDto;
 import com.app.car.exception.car.CarIdNotFoundException;
-import com.app.car.exception.telegramNotification.TelegramExecutionException;
+import com.app.car.exception.notification.TelegramExecutionException;
 import com.app.car.exception.user.UserNotFoundException;
 import com.app.car.notification.NotificationTelegramBot;
 import com.app.car.repository.CarRepository;

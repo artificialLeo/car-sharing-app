@@ -1,4 +1,4 @@
-package com.app.car.exception.telegramNotification;
+package com.app.car.exception.notification;
 
 public class TelegramExecutionException extends RuntimeException {
 

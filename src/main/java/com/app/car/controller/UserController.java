@@ -4,6 +4,7 @@ import com.app.car.dto.user.UpdateUserProfileDto;
 import com.app.car.dto.user.UserProfileDto;
 import com.app.car.model.enums.UserRole;
 import com.app.car.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class UserController {
 
     @PutMapping("/{id}/role")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Operation(summary = "Update user role")
     public ResponseEntity<Void> updateUserRole(
             @PathVariable Long id,
             @RequestParam UserRole newRole
@@ -34,6 +36,7 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Operation(summary = "Get my profile information")
     public ResponseEntity<UserProfileDto> getMyProfileInfo() {
         UserProfileDto myProfile = userService.getMyProfileInfo();
         return ResponseEntity.ok(myProfile);
@@ -41,6 +44,7 @@ public class UserController {
 
     @PutMapping("/me")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Operation(summary = "Update my profile information")
     public ResponseEntity<UpdateUserProfileDto> updateMyProfileInfo(
             @Valid @RequestBody UpdateUserProfileDto updatedUser
     ) {
@@ -49,3 +53,4 @@ public class UserController {
         return ResponseEntity.ok(updatedUserProfile);
     }
 }
+

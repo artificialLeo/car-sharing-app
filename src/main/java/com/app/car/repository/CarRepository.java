@@ -1,6 +1,5 @@
 package com.app.car.repository;
 
-import com.app.car.dto.car.CarShortInfoDto;
 import com.app.car.model.Car;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

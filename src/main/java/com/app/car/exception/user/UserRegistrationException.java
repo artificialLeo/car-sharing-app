@@ -1,7 +1,6 @@
 package com.app.car.exception.user;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 public class UserRegistrationException extends Exception {

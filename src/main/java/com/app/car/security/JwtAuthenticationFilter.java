@@ -1,5 +1,6 @@
 package com.app.car.security;
 
+import com.app.car.util.OpenEndpoints;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,8 +59,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPermittedEndpoint(String requestPath) {
-        return requestPath.startsWith("/auth/registration")
-                || requestPath.startsWith("/auth/login")
-                || requestPath.startsWith("actuator/health");
+        for (OpenEndpoints endpoint : OpenEndpoints.values()) {
+            if (
+                    requestPath.startsWith(endpoint.getPath())
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

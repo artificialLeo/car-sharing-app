@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -109,18 +108,24 @@ public class PaymentServiceImpl implements PaymentService {
                 .findById(rentalId)
                 .orElseThrow(() -> new RentalIdNotFoundException(rentalId));
 
-        if (rental != null && rental.getReturnDate() != null && rental.getActualReturnDate() != null) {
+        if (
+                rental != null
+                        && rental.getReturnDate() != null
+                        && rental.getActualReturnDate() != null
+        ) {
             LocalDate returnDate = rental.getReturnDate();
             LocalDate actualReturnDate = rental.getActualReturnDate();
 
-            long overdueDays = ChronoUnit.DAYS.between(returnDate, actualReturnDate);
+            long overdueDays = ChronoUnit.DAYS
+                    .between(returnDate, actualReturnDate);
             BigDecimal dailyFee = BigDecimal.valueOf(20);
             BigDecimal fineMultiplier = BigDecimal.valueOf(1.5);
 
             BigDecimal totalPrice = BigDecimal.ZERO;
 
             if (overdueDays > 0) {
-                totalPrice = dailyFee.multiply(BigDecimal.valueOf(overdueDays)).multiply(fineMultiplier);
+                totalPrice = dailyFee.multiply(BigDecimal.valueOf(overdueDays))
+                        .multiply(fineMultiplier);
             }
 
             return totalPrice;
@@ -128,7 +133,6 @@ public class PaymentServiceImpl implements PaymentService {
             return BigDecimal.ZERO;
         }
     }
-
 
     public String buildSuccessUrl(Long rentalId) {
         return "/payments/success?rentalId=" + rentalId;
