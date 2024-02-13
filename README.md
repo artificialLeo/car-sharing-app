@@ -49,6 +49,6 @@ Explore the various controllers, understand the defined models, and contribute t
 
 **Postman Collection:**
 - [Download Postman Collection](misc/car-sharing-app.postman_collection.json) 🚀
-- 
+
 **Swagger:**
 - [AWS link](http://ec2-54-89-100-138.compute-1.amazonaws.com/swagger-ui/index.html) 📚
