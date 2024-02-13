@@ -53,4 +53,3 @@ public class UserController {
         return ResponseEntity.ok(updatedUserProfile);
     }
 }
-
