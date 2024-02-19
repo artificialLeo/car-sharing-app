@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003
+      author: your_name
+      changes:
+        - createTable:
+            tableName: rental
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: rental_date
+                  type: DATE
+              - column:
+                  name: return_date
+                  type: DATE
+              - column:
+                  name: actual_return_date
+                  type: DATE
+              - column:
+                  name: car_id
+                  type: BIGINT
+              - column:
+                  name: user_id
+                  type: BIGINT

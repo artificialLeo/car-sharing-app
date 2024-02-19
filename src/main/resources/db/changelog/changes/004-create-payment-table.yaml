@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004
+      author: your_name
+      changes:
+        - createTable:
+            tableName: payment
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+              - column:
+                  name: type
+                  type: VARCHAR(20)
+              - column:
+                  name: rental_id
+                  type: BIGINT
+              - column:
+                  name: session_url
+                  type: VARCHAR(255)
+              - column:
+                  name: session_id
+                  type: VARCHAR(255)
+              - column:
+                  name: amount_to_pay
+                  type: DECIMAL(10, 2)
